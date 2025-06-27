@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace TAs.Application.User
+namespace TAs.Application.Users
 {
     public interface IUserContext
     {
@@ -14,7 +14,7 @@ namespace TAs.Application.User
             var user = httpContextAccessor?.HttpContext?.User;
             if (user == null)
                 throw new InvalidOperationException("User context is not present");
-            if (user.Identity == null || user.Identity.IsAuthenticated)
+            if (user.Identity == null || !user.Identity.IsAuthenticated)
                 return null;
             var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;

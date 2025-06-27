@@ -1,7 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
-using TAs.Application.User;
+using TAs.Application.Users;
 
 namespace TAs.Application.Extensions
 {
