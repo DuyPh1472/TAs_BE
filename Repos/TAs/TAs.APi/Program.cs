@@ -25,8 +25,11 @@ if (app.Environment.IsDevelopment())
 }
 
 var scope = app.Services.CreateScope();
-var seeder = scope.ServiceProvider.GetRequiredService<ISkillSeeder>();
-await seeder.Seed();
+var seeders = scope.ServiceProvider.GetServices<ISeeder>();
+foreach (var seeder in seeders)
+{
+    await seeder.Seed();
+}
 app.UseMiddleware<ErrorHandlingMiddle>();
 // Configure the HTTP request pipeline.
 
