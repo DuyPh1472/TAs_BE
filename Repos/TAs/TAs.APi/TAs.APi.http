@@ -1,0 +1,6 @@
+@TAs.APi_HostAddress = http://localhost:5285
+
+GET {{TAs.APi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

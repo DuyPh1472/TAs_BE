@@ -1,0 +1,66 @@
+# Visual Studio
+.vs/
+
+# JetBrains Rider
+.idea/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+out/
+
+# Visual Studio Code
+.vscode/
+.history/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Dotnet tools
+*.dbmdl
+*.pdb
+
+# Entity Framework (nếu không muốn quản lý migration bằng git, có thể bỏ dòng này)
+# Migrations/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Publish
+publish/
+wwwroot/dist/
+wwwroot/node_modules/
+
+# Others
+*.swp
+*.bak
+*.tmp
+
+# Secrets & local config
+secrets.json
+appsettings.Development.json
+appsettings.Local.json

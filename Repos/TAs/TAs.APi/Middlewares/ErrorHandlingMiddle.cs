@@ -1,0 +1,26 @@
+using TAs.Domain.Exceptions;
+namespace TAs.APi.Middlewares
+{
+    public class ErrorHandlingMiddle(ILogger<ErrorHandlingMiddle> logger) : IMiddleware
+    {
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        {
+            try
+            {
+                await next.Invoke(context);
+            }
+            catch (NotFoundException notfound)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(notfound.Message);
+                logger.LogError(notfound.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                context.Response.StatusCode = 500;
+                await context.Response.WriteAsync(ex.Message);
+            }
+        }
+    }
+}
