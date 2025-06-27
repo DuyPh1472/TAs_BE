@@ -3,7 +3,7 @@ using TAs.Domain.Entities;
 using TAs.Infrastructure.Persistence;
 namespace TAs.Infrastructure.Seeder.Skills
 {
-    public class SkillSeeder(TAsDbContext dbContext) : ISkillSeeder
+    public class SkillSeeder(TAsDbContext dbContext) : ISeeder
     {
         public async Task Seed()
         {

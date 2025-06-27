@@ -1,6 +1,6 @@
 namespace TAs.Infrastructure.Seeder.Skills
 {
-    public interface ISkillSeeder
+    public interface ISeeder
     {
         Task Seed();
     }
