@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
+using TAs.Application.Users;
 
 namespace TAs.Application.Extensions
 {
@@ -12,6 +13,8 @@ namespace TAs.Application.Extensions
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(applicationAssembly));
             services.AddValidatorsFromAssemblies(new[] { applicationAssembly })
             .AddFluentValidationAutoValidation();
+            services.AddScoped<IUserContext, UserContext>();
+            services.AddHttpContextAccessor();
         }
     }
 }

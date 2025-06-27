@@ -1,8 +1,10 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TAs.APi.ApiResponse;
 using TAs.Application.Identity.Commands;
 using TAs.Application.Identity.Commands.Login;
+using TAs.Application.Users.UserDetail;
 
 namespace TAs.APi.Controllers
 {
@@ -26,6 +28,18 @@ namespace TAs.APi.Controllers
                 return Unauthorized
                 (new ApiResponse<string>(false, null, 401, result.Error.Description));
             return Ok(new ApiResponse<string>(true, result.Data, 200, "Đăng nhập thành công"));
+        }
+        [HttpPatch("user")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse<object>>> UpdateUserDetail([FromBody] UserDetailCommand request)
+        {
+            var command = await mediator.Send(request);
+            if (!command.IsSuccess)
+                return NotFound(
+                    new ApiResponse<object>(false, null, 404, command.Error.Description)
+                    );
+            return Ok(
+                new ApiResponse<object>(true, command.Data, 200, "Cập nhật thành công"));
         }
     }
 }
