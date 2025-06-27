@@ -7,6 +7,9 @@ using TAs.Domain.Repositories;
 using TAs.Infrastructure.Persistence;
 using TAs.Infrastructure.Persistence.GenericRepo;
 using TAs.Infrastructure.Repositories;
+using TAs.Infrastructure.Seeder.IdentityRoles;
+using TAs.Infrastructure.Seeder.IdentityUsers;
+using TAs.Infrastructure.Seeder.IdentityUsersRoles;
 using TAs.Infrastructure.Seeder.Skills;
 namespace TAs.Infrastructure.Extensions;
 
@@ -16,7 +19,10 @@ public static class ServiceCollectionExtension
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<TAsDbContext>(options => options.UseNpgsql(connectionString));
-        services.AddScoped<ISkillSeeder, SkillSeeder>();
+        services.AddScoped<ISeeder, SkillSeeder>();
+        services.AddScoped<ISeeder, IdentityUserSeeder>();
+        services.AddScoped<ISeeder, IdentityRoleSeeder>();
+        services.AddScoped<ISeeder, IdentityUserRoleSeeder>();
         services.AddIdentityApiEndpoints<User>()
         .AddEntityFrameworkStores<TAsDbContext>();
         services.AddScoped<ISkillRepository, SkillRepository>();
