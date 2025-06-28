@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TAs.Domain.Entities;
 using TAs.Domain.IGenericRepo;
 using TAs.Domain.Repositories;
+using TAs.Infrastructure.Authorization;
 using TAs.Infrastructure.Persistence;
 using TAs.Infrastructure.Persistence.GenericRepo;
 using TAs.Infrastructure.Repositories;
@@ -26,6 +27,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISeeder, IdentityUserRoleSeeder>();
         services.AddIdentityApiEndpoints<User>()
         .AddRoles<IdentityRole<Guid>>()
+        .AddClaimsPrincipalFactory<TAsUserClaimPrincipalFactory>()
         .AddEntityFrameworkStores<TAsDbContext>();
         services.AddScoped<ISkillRepository, SkillRepository>();
         services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
