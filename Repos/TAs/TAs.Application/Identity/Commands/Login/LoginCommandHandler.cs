@@ -27,18 +27,23 @@ namespace TAs.Application.Identity.Commands.Login
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
             if (!result.Succeeded)
                 return Result<string>.Failure(IdentityErrors.LoginFailed);
-            //Sing JWT
-            var token = GenerateJwtToken(user);
+            //Sign JWT
+            var token = await GenerateJwtToken(user);
             return Result<string>.Success(token);
         }
 
-        private string GenerateJwtToken(User user)
+        private async Task<string> GenerateJwtToken(User user)
         {
-            var claims = new[]
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? "")
             };
+
+            // Add role claims
+            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

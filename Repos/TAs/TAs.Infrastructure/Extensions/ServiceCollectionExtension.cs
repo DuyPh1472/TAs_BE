@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISeeder, IdentityRoleSeeder>();
         services.AddScoped<ISeeder, IdentityUserRoleSeeder>();
         services.AddIdentityApiEndpoints<User>()
+        .AddRoles<IdentityRole<Guid>>()
         .AddEntityFrameworkStores<TAsDbContext>();
         services.AddScoped<ISkillRepository, SkillRepository>();
         services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
