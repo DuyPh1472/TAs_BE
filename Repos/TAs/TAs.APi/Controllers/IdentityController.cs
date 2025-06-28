@@ -32,6 +32,7 @@ namespace TAs.APi.Controllers
             return Ok(new ApiResponse<string>(true, result.Data, 200, "Đăng nhập thành công"));
         }
         [HttpPatch("user")]
+        [Authorize(Roles = UserRoles.User)]
         [Authorize]
         public async Task<ActionResult<ApiResponse<object>>> UpdateUserDetail([FromBody] UserDetailCommand request)
         {
