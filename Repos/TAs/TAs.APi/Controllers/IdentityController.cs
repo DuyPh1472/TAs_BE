@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using TAs.APi.ApiResponse;
 using TAs.Application.Identity.Commands;
 using TAs.Application.Identity.Commands.Login;
+using TAs.Application.Users.Commands.AssignUserRoles;
 using TAs.Application.Users.UserDetail;
+using TAs.Domain.Constants;
 
 namespace TAs.APi.Controllers
 {
@@ -36,10 +38,21 @@ namespace TAs.APi.Controllers
             var command = await mediator.Send(request);
             if (!command.IsSuccess)
                 return NotFound(
-                    new ApiResponse<object>(false, null, 404, command.Error.Description)
-                    );
+                    new ApiResponse<object>(false, null, 404, command.Error.Description));
             return Ok(
-                new ApiResponse<object>(true, command.Data, 200, "Cập nhật thành công"));
+                new ApiResponse<object>(true, null, 200, "Cập nhật thành công"));
+        }
+        [HttpPost("userRole")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<ApiResponse<object>>> AssignUserRole(AssignUserRoleCommand command)
+        {
+            var result = await mediator.Send(command);
+            if (!result.IsSuccess)
+                return NotFound(
+                    new ApiResponse<object>(false, null, 404, result.Error.Description));
+            return Ok(
+                new ApiResponse<object>(true, null, 200, "Cập nhật thành công"));
+
         }
     }
 }

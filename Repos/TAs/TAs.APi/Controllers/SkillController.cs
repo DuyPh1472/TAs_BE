@@ -35,7 +35,7 @@ namespace TAs.APi.Controllers
             {
                 var response =
                 new ApiResponse<SkillDTO>(false, null, 404, result.Error.Description);
-                if (result.Error.Code == "Lỗi không tìm thấy")
+                if (result.Error.Code == "Error not found")
                     return NotFound(response);
             }
             var isSuccess =
@@ -73,7 +73,7 @@ namespace TAs.APi.Controllers
                 var response =
                 new ApiResponse<SkillDTO>
                 (false, null, 404, result.Error.Description);
-                if (result.Error.Code == "Lỗi không tìm thấy")
+                if (result.Error.Code == "Error not found")
                     return NotFound(response);
             }
             return NoContent();
@@ -90,7 +90,7 @@ namespace TAs.APi.Controllers
                 var response =
                 new ApiResponse<SkillDTO>
                 (false, null, 404, command.Error.Description);
-                if (command.Error.Code == "Lỗi không tìm thấy")
+                if (command.Error.Code == "Error not found")
                     return NotFound(response);
             }
             return NoContent();
