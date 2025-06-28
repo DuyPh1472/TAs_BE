@@ -9,6 +9,7 @@ using TAs.Application.Skills.Commands.UpdateSkill;
 using TAs.Application.Skills.DTOs;
 using TAs.Application.Skills.Queries.GetAllSkills;
 using TAs.Application.Skills.Queries.GetSkillById;
+using TAs.Domain.Constants;
 namespace TAs.APi.Controllers
 {
     [ApiController]
@@ -42,6 +43,7 @@ namespace TAs.APi.Controllers
             return Ok(isSuccess);
         }
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<ApiResponse<SkillDTO>>> Create([FromBody] CreateSkillCommand command)
         {
             var result = await mediator.Send(command);
@@ -57,9 +59,10 @@ namespace TAs.APi.Controllers
                 return BadRequest(response);
             }
 
-            return Created(string.Empty, new ApiResponse<SkillDTO>(true, null, 201, null));
+            return Created(string.Empty, new ApiResponse<SkillDTO>(true, null, 201, "Tạo kỹ năng thành công."));
         }
         [HttpPut]
+        [Authorize(Roles = UserRoles.Admin)]
         [Route("{id:guid}")]
         public async Task<ActionResult<ApiResponse<SkillDTO>>> Update([FromRoute] Guid id, CreateAndUpdateSkill request)
         {
@@ -77,6 +80,7 @@ namespace TAs.APi.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = UserRoles.Admin)]
         [Route("{id:guid}")]
         public async Task<ActionResult<ApiResponse<SkillDTO>>> Remove([FromRoute] Guid id)
         {
