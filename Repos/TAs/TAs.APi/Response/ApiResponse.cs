@@ -1,4 +1,4 @@
-namespace TAs.APi.ApiResponse
+namespace TAs.APi.Response
 {
     public class ApiResponse<T>
     {

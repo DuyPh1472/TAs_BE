@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TAs.APi.ApiResponse;
+using TAs.APi.Response;
 using TAs.Application.Skills.Commands.CreateSkill;
 using TAs.Application.Skills.Commands.DTOs;
 using TAs.Application.Skills.Commands.RemoveSkill;

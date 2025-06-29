@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TAs.APi.ApiResponse;
+using TAs.APi.Response;
 using TAs.Application.Identity.Commands;
 using TAs.Application.Identity.Commands.Login;
 using TAs.Application.Users.Commands.AssignUserRoles;
@@ -38,7 +38,7 @@ namespace TAs.APi.Controllers
                 new ApiResponse<string>(
                     true, result.Data, 200, "Đăng nhập thành công"));
         }
-        
+
         [HttpPatch("user")]
         [Authorize(Roles = UserRoles.User)]
         [Authorize]
