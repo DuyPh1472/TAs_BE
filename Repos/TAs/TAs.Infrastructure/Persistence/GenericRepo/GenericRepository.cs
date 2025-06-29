@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TAs.Domain.IGenericRepo;
 namespace TAs.Infrastructure.Persistence.GenericRepo
 {

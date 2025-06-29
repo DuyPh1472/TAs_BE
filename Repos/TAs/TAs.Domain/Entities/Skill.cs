@@ -11,7 +11,7 @@ namespace TAs.Domain.Entities
         public required string Icon { get; set; }
         public required string Color { get; set; }
         public required string Description { get; set; }
-
+        public ICollection<SkillLesson> SkillLessons { get; set; } = [];
     }
 
 }
