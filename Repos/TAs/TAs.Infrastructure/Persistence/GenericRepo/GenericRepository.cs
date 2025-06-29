@@ -8,12 +8,10 @@ namespace TAs.Infrastructure.Persistence.GenericRepo
     {
         private readonly TAsDbContext _context;
         private readonly DbSet<T> _entities;
-        private readonly ILogger<GenericRepository<T>> _logger;
-        public GenericRepository(TAsDbContext context, ILogger<GenericRepository<T>> logger)
+        public GenericRepository(TAsDbContext context)
         {
             _context = context;
             _entities = context.Set<T>();
-            _logger = logger;
         }
 
         public void Add(T model)
@@ -22,9 +20,9 @@ namespace TAs.Infrastructure.Persistence.GenericRepo
             {
                 _entities.Add(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogError("An error occurred while adding an entity of type {EntityType}.", typeof(T).Name);
+                throw new Exception(ex.ToString());
             }
         }
 
@@ -34,9 +32,10 @@ namespace TAs.Infrastructure.Persistence.GenericRepo
             {
                 _entities.Remove(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogError("An error occurred while deleting an entity of type {EntityType}.", typeof(T).Name);
+                throw new Exception(ex.ToString());
+
             }
         }
 
@@ -63,7 +62,8 @@ namespace TAs.Infrastructure.Persistence.GenericRepo
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating an entity of type {EntityType}.", typeof(T).Name);
+                throw new Exception(ex.ToString());
+
             }
         }
     }

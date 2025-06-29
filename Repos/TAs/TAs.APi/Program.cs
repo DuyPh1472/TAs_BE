@@ -10,6 +10,10 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddScoped<ErrorHandlingMiddle>();
+builder.Services.AddProblemDetails();
+// Add exception handlers
+builder.Services.AddExceptionHandler<ErrorHandlingMiddle>();
+// Configure the HTTP request pipeline.
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -30,8 +34,7 @@ foreach (var seeder in seeders)
 {
     await seeder.Seed();
 }
-app.UseMiddleware<ErrorHandlingMiddle>();
-// Configure the HTTP request pipeline.
+// add problem details
 
 app.UseHttpsRedirection();
 // app.MapGroup("/api/identity/").MapIdentityApi<User>();
