@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TAs.APi.Response;
 using TAs.Application.Categories.Commands.Create;
+using TAs.Application.Categories.Commands.Remove;
 using TAs.Application.Categories.Commands.Update;
 using TAs.Application.Categories.DTOs.Requests;
 using TAs.Application.Categories.DTOs.Retrieval;
@@ -68,6 +69,21 @@ namespace TAs.APi.Controllers
             }
             return Ok(new ApiResponse<GetAllCategoriesDTO>(true, null, 204, string.Empty));
 
+        }
+        [HttpDelete]
+        [Authorize(Roles = UserRoles.Admin)]
+        [Route("{categoryId:guid}")]
+        public async Task<ActionResult<ApiResponse<GetAllCategoriesDTO>>> Delete(Guid categoryId)
+        {
+            var command = await mediator.Send(new RemoveCategoryCommand(categoryId));
+            if (!command.IsSuccess)
+            {
+                var response =
+                new ApiResponse<GetAllCategoriesDTO>(false, null, 404, command.Error.Description);
+                if (command.Error.Code == "NoCategoryFound")
+                    return NotFound(response);
+            }
+            return NoContent();
         }
     }
 }
