@@ -15,11 +15,11 @@ namespace TAs.Application.Categories.Commands.Create
             var user = userContext.GetCurrentUser();
             var category = new Category
             {
-                Accent = request.categoryRequest.Accent,
-                Description = request.categoryRequest.Description,
-                Difficult = request.categoryRequest.Difficult,
-                Duration = request.categoryRequest.Duration,
-                Title = request.categoryRequest.Title,
+                Accent = request.categoryRequest?.Accent ?? string.Empty,
+                Description = request.categoryRequest?.Description ?? string.Empty,
+                Difficult = request.categoryRequest?.Difficult ?? string.Empty,
+                Duration = request.categoryRequest?.Duration ?? 0,
+                Title = request.categoryRequest?.Title ?? string.Empty,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = user!.Id
             };
