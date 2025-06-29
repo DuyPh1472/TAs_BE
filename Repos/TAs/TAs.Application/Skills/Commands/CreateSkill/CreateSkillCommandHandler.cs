@@ -1,22 +1,21 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using TAs.Application.Interfaces;
 using TAs.Application.Skills.HandleError;
 using TAs.Domain.Entities;
-using TAs.Domain.Repositories;
 using TAs.Domain.Result;
 
 namespace TAs.Application.Skills.Commands.CreateSkill
 {
-    public class CreateSkillCommandHandler(ISkillRepository skillRepository,
+    public class CreateSkillCommandHandler(IUnitOfWork unitOfWork,
     ILogger<CreateSkillCommandHandler> logger)
     : IRequestHandler<CreateSkillCommand, Result>
     {
         public async Task<Result> Handle(CreateSkillCommand request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Create Skill from the repository.");
-            var isDuplicated = await skillRepository.IsDuplicated(request.Name, request.Path);
+            var isDuplicated = await unitOfWork.SkillRepository.IsDuplicated(request.Name, request.Path);
             if (isDuplicated) return Result.Failure(SkillErrors.SameSkill);
-
             var model = new Skill
             {
                 Name = request.Name,
@@ -25,8 +24,8 @@ namespace TAs.Application.Skills.Commands.CreateSkill
                 Color = request.Color,
                 Description = request.Description
             };
-            skillRepository.Add(model);
-            await skillRepository.SaveChangeAsync();
+            unitOfWork.SkillRepository.Add(model);
+            await unitOfWork.SkillRepository.SaveChangeAsync();
             return Result.Success();
         }
     }

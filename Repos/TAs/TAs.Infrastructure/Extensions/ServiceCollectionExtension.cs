@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TAs.Application.Interfaces;
 using TAs.Domain.Entities;
 using TAs.Domain.IGenericRepo;
 using TAs.Domain.Repositories;
@@ -13,6 +14,7 @@ using TAs.Infrastructure.Seeder.IdentityRoles;
 using TAs.Infrastructure.Seeder.IdentityUsers;
 using TAs.Infrastructure.Seeder.IdentityUsersRoles;
 using TAs.Infrastructure.Seeder.Skills;
+using TAs.Infrastructure.UOW;
 namespace TAs.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtension
@@ -25,10 +27,11 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISeeder, IdentityUserSeeder>();
         services.AddScoped<ISeeder, IdentityRoleSeeder>();
         services.AddScoped<ISeeder, IdentityUserRoleSeeder>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddIdentityApiEndpoints<User>()
-        .AddRoles<IdentityRole<Guid>>()
-        .AddClaimsPrincipalFactory<TAsUserClaimPrincipalFactory>()
-        .AddEntityFrameworkStores<TAsDbContext>();
+         .AddRoles<IdentityRole<Guid>>()
+         .AddClaimsPrincipalFactory<TAsUserClaimPrincipalFactory>()
+         .AddEntityFrameworkStores<TAsDbContext>();
         services.AddScoped<ISkillRepository, SkillRepository>();
         services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
     }
