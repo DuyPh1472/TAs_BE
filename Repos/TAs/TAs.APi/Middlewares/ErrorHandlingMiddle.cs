@@ -14,16 +14,12 @@ public class ErrorHandlingMiddle : IExceptionHandler
         _logger = logger;
     }
 
-    // Cách thức middleware xử lý lỗi
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        // Mặc định nội dung trả về là application/json
         httpContext.Response.ContentType = "application/json";
 
-        // Khởi tạo thông báo lỗi chung
         var errorResponse = new Error("Unhandled Exception", exception.Message);
 
-        // Cập nhật mã trạng thái HTTP dựa trên loại lỗi
         switch (exception)
         {
             case NotFoundException notFoundException:
@@ -51,12 +47,10 @@ public class ErrorHandlingMiddle : IExceptionHandler
                 break;
         }
 
-        // Trả về kết quả lỗi dưới dạng JSON
         var result = Result.Failure(errorResponse);
 
-        // Trả về lỗi dưới dạng JSON cho client
         await httpContext.Response.WriteAsJsonAsync(result, cancellationToken);
 
-        return true; // Đánh dấu là lỗi đã được xử lý
+        return true; 
     }
 }

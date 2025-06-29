@@ -11,7 +11,7 @@ public class GetCategoryIdDTO
     public string Accent { get; set; } = string.Empty;
     public float Duration { get; set; }
     public List<LessonDTO> Lessons { get; set; } = null!;
-    private static GetCategoryIdDTO FromEntity(Category category, List<Lesson> lessons)
+    public static GetCategoryIdDTO FromEntity(Category category, List<Lesson> lessons)
     {
         return new GetCategoryIdDTO
         {

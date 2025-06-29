@@ -23,7 +23,7 @@ namespace TAs.APi.Controllers
         {
             var skills = await mediator.Send(new GetAllSkillsQuery());
             return Ok(new ApiResponse<IEnumerable<SkillDTO>>
-            (true, skills, 200, "Lấy danh sách kĩ năng thành công."));
+            (true, skills, 200, "Skill list retrieved successfully."));
         }
         [HttpGet]
         [AllowAnonymous]
@@ -39,7 +39,7 @@ namespace TAs.APi.Controllers
                     return NotFound(response);
             }
             var isSuccess =
-             new ApiResponse<SkillDTO>(true, result.Data, 200, "Lấy kĩ năng theo Id thành công.");
+             new ApiResponse<SkillDTO>(true, result.Data, 200, "Skill retrieved successfully by ID.");
             return Ok(isSuccess);
         }
         [HttpPost]
@@ -53,13 +53,13 @@ namespace TAs.APi.Controllers
                 var response =
                 new ApiResponse<SkillDTO>
                 (false, null, 409, result.Error.Description);
-                if (result.Error.Code == "Lỗi trùng lặp")
+                if (result.Error.Code == "Duplicate Error")
                     return Conflict(response);
 
                 return BadRequest(response);
             }
 
-            return Created(string.Empty, new ApiResponse<SkillDTO>(true, null, 201, "Tạo kỹ năng thành công."));
+            return Created(string.Empty, new ApiResponse<SkillDTO>(true, null, 201, "Skill created successfully."));
         }
         [HttpPut]
         [Authorize(Roles = UserRoles.Admin)]

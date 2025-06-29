@@ -1,6 +1,6 @@
 using TAs.Domain.Errors;
 
-namespace TAs.Application.Skills.HandleError
+namespace TAs.Application.Users.HandlerErrors
 {
     public static class IdentityErrors
     {

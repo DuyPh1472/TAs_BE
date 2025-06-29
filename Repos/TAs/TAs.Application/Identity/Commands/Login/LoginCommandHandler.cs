@@ -7,7 +7,7 @@ using TAs.Domain.Entities;
 using TAs.Domain.Result;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using TAs.Application.Skills.HandleError;
+using TAs.Application.Users.HandlerErrors;
 
 namespace TAs.Application.Identity.Commands.Login
 {

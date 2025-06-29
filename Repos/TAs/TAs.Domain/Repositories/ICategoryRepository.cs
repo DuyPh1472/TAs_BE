@@ -5,6 +5,6 @@ namespace TAs.Domain.Repositories
 {
     public interface ICategoryRepository : IGenericRepository<Category>
     {
-        // Task<Category> GetCategoryByIdAsync(Guid categoryId);
+        Task<Category?> GetCategoryByIdAsync(Guid categoryId);
     }
 }

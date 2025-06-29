@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using TAs.Application.Skills.HandleError;
+using TAs.Application.Users.HandlerErrors;
 using TAs.Domain.Entities;
 using TAs.Domain.Result;
 
