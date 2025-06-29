@@ -19,18 +19,26 @@ namespace TAs.APi.Controllers
         {
             var result = await mediator.Send(dto);
             if (!result.IsSuccess)
-                return BadRequest(new ApiResponse<object>(false, null, 400, result.Error.Description));
-            return Ok(new ApiResponse<object>(true, null, 200, "Đăng ký thành công"));
+                return BadRequest(
+                    new ApiResponse<object>(
+                        false, null, 400, result.Error.Description));
+            return Ok(
+                new ApiResponse<object>(
+                    true, null, 200, "Đăng ký thành công"));
         }
         [HttpPost("login")]
         public async Task<ActionResult<ApiResponse<string>>> Login([FromBody] LoginCommand dto)
         {
             var result = await mediator.Send(dto);
             if (!result.IsSuccess)
-                return Unauthorized
-                (new ApiResponse<string>(false, null, 401, result.Error.Description));
-            return Ok(new ApiResponse<string>(true, result.Data, 200, "Đăng nhập thành công"));
+                return Unauthorized(
+                    new ApiResponse<string>(
+                        false, null, 401, result.Error.Description));
+            return Ok(
+                new ApiResponse<string>(
+                    true, result.Data, 200, "Đăng nhập thành công"));
         }
+        
         [HttpPatch("user")]
         [Authorize(Roles = UserRoles.User)]
         [Authorize]
@@ -39,10 +47,13 @@ namespace TAs.APi.Controllers
             var command = await mediator.Send(request);
             if (!command.IsSuccess)
                 return NotFound(
-                    new ApiResponse<object>(false, null, 404, command.Error.Description));
+                    new ApiResponse<object>(
+                        false, null, 404, command.Error.Description));
             return Ok(
-                new ApiResponse<object>(true, null, 200, "Cập nhật thành công"));
+                new ApiResponse<object>(
+                    true, null, 200, "Cập nhật thành công"));
         }
+
         [HttpPost("userRole")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<ApiResponse<object>>> AssignUserRole(AssignUserRoleCommand command)
@@ -50,9 +61,11 @@ namespace TAs.APi.Controllers
             var result = await mediator.Send(command);
             if (!result.IsSuccess)
                 return NotFound(
-                    new ApiResponse<object>(false, null, 404, result.Error.Description));
+                    new ApiResponse<object>(
+                        false, null, 404, result.Error.Description));
             return Ok(
-                new ApiResponse<object>(true, null, 200, "Cập nhật thành công"));
+                new ApiResponse<object>(
+                    true, null, 200, "Cập nhật thành công"));
 
         }
     }

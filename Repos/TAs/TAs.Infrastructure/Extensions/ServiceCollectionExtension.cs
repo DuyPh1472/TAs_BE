@@ -33,6 +33,14 @@ public static class ServiceCollectionExtension
          .AddClaimsPrincipalFactory<TAsUserClaimPrincipalFactory>()
          .AddEntityFrameworkStores<TAsDbContext>();
         services.AddScoped<ISkillRepository, SkillRepository>();
-        services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IAchievementRepository, AchievementRepository>();
+        services.AddScoped<CategoryLessonRepository, CategoryLessonRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ILessonRepository, LessonRepository>();
+        services.AddScoped<IProgressRepository, ProgressRepository>();
+        services.AddScoped<ISkillLessonRepository, SkillLessonRepository>();
+        services.AddScoped<IUserAchievementRepository, UserAchievementRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
     }
 }

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TAs.Domain.Entities;
 using TAs.Domain.Repositories;
 using TAs.Infrastructure.Persistence;

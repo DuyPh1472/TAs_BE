@@ -17,6 +17,7 @@ namespace TAs.Infrastructure.Seeder.Skills
         }
         private IEnumerable<Skill> GetSkills()
         {
+            var adminId = Guid.Parse("ba02df20-a2ca-4f10-be79-8f5fc5bca1da");
             List<Skill> skills = new()
             {
                 new Skill
@@ -29,6 +30,7 @@ namespace TAs.Infrastructure.Seeder.Skills
                     Description = "C# is a modern, object-oriented programming language developed by Microsoft.",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
+                    CreatedBy = adminId
                 },
                 new Skill
                 {
@@ -39,7 +41,8 @@ namespace TAs.Infrastructure.Seeder.Skills
                     Color = "#f7df1e",
                     Description = "JavaScript is a versatile programming language primarily used for web development.",
                     CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedBy = adminId
                 },
                 // Add more skills as needed
             };
