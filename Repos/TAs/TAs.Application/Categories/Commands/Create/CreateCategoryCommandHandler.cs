@@ -4,7 +4,7 @@ using TAs.Application.Users;
 using TAs.Domain.Entities;
 using TAs.Domain.Result;
 
-namespace TAs.Application.Categories.Commands
+namespace TAs.Application.Categories.Commands.Create
 {
     public class CreateCategoryCommandHandler(IUnitOfWork unitOfWork,
     IUserContext userContext)
@@ -15,11 +15,11 @@ namespace TAs.Application.Categories.Commands
             var user = userContext.GetCurrentUser();
             var category = new Category
             {
-                Accent = request.Accent,
-                Description = request.Description,
-                Difficult = request.Difficult,
-                Duration = request.Duration,
-                Title = request.Title,
+                Accent = request.categoryRequest.Accent,
+                Description = request.categoryRequest.Description,
+                Difficult = request.categoryRequest.Difficult,
+                Duration = request.categoryRequest.Duration,
+                Title = request.categoryRequest.Title,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = user!.Id
             };

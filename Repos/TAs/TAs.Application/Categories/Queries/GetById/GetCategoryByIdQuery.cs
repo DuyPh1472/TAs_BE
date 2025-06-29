@@ -1,5 +1,5 @@
 using MediatR;
-using TAs.Application.Categories.DTOs;
+using TAs.Application.Categories.DTOs.Retrieval;
 using TAs.Domain.Result;
 
 namespace TAs.Application.Categories.Queries.GetById
@@ -8,5 +8,5 @@ namespace TAs.Application.Categories.Queries.GetById
     {
         public Guid Id = categoryId;
     }
-    
+
 }

@@ -1,5 +1,5 @@
 using MediatR;
-using TAs.Application.Categories.DTOs;
+using TAs.Application.Categories.DTOs.Retrieval;
 using TAs.Application.Interfaces;
 
 namespace TAs.Application.Categories.Queries

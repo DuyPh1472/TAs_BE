@@ -1,7 +1,7 @@
 using TAs.Application.Lessons.DTOs;
 using TAs.Domain.Entities;
 
-namespace TAs.Application.Categories.DTOs;
+namespace TAs.Application.Categories.DTOs.Retrieval;
 
 public class GetCategoryIdDTO
 {
