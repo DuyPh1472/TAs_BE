@@ -8,6 +8,7 @@ namespace TAs.Domain.Entities
         public string Region { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public float TargetScore { get; set; }
+        // public int TotalStudyTime { get; set; }
         public string Level { get; set; } = string.Empty;
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

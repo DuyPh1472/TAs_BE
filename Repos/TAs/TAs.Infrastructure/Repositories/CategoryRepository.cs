@@ -10,5 +10,10 @@ namespace TAs.Infrastructure.Repositories
         public CategoryRepository(TAsDbContext context) : base(context)
         {
         }
+
+        // public async Task<Category> GetCategoryByIdAsync(Guid categoryId)
+        // {
+        //     return await 
+        // }
     }
 }

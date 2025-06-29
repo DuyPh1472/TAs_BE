@@ -268,9 +268,6 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -307,8 +304,6 @@ namespace TAs.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("LessonId");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Lessons");
                 });
@@ -635,17 +630,6 @@ namespace TAs.Infrastructure.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Lesson");
-                });
-
-            modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>
-                {
-                    b.HasOne("TAs.Domain.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Progress", b =>

@@ -11,9 +11,11 @@ using TAs.Infrastructure.Persistence;
 using TAs.Infrastructure.Persistence.GenericRepo;
 using TAs.Infrastructure.Repositories;
 using TAs.Infrastructure.Seeder.Categories;
+using TAs.Infrastructure.Seeder.CategoryLessons;
 using TAs.Infrastructure.Seeder.IdentityRoles;
 using TAs.Infrastructure.Seeder.IdentityUsers;
 using TAs.Infrastructure.Seeder.IdentityUsersRoles;
+using TAs.Infrastructure.Seeder.Lessons;
 using TAs.Infrastructure.Seeder.Skills;
 using TAs.Infrastructure.UOW;
 namespace TAs.Infrastructure.Extensions;
@@ -29,6 +31,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISeeder, IdentityRoleSeeder>();
         services.AddScoped<ISeeder, IdentityUserRoleSeeder>();
         services.AddScoped<ISeeder, CategorySeeder>();
+        services.AddScoped<ISeeder, LessonSeeder>();
+        services.AddScoped<ISeeder, CategoryLessonSeeder>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddIdentityApiEndpoints<User>()
          .AddRoles<IdentityRole<Guid>>()

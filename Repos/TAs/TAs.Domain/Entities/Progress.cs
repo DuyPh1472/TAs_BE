@@ -11,6 +11,8 @@ namespace TAs.Domain.Entities
         public Guid LessonId { get; set; }
         public string CompletedSentences { get; set; } = string.Empty;
         public int TotalSentences { get; set; }
+        // public int TotalChallenge { get; set; }
+        // public int ProgressChallenge { get; set; }
         public float Score { get; set; }
         public bool ProgressStatus { get; set; }
         [ForeignKey(nameof(UserId))]

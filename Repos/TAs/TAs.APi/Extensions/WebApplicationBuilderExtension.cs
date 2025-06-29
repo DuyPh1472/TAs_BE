@@ -9,6 +9,17 @@ namespace TAs.APi.Extensions
     {
         public static void AddPresentation(this WebApplicationBuilder builder)
         {
+            // Add CORS configuration
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddAuthentication(options =>
     {

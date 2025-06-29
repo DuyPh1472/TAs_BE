@@ -1,11 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TAs.Domain.Entities
+namespace TAs.Application.Lessons.DTOs
 {
-    public class Lesson : BaseEntity
+    public class LessonDTO
     {
-        [Key]
         public Guid LessonId { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -14,9 +10,6 @@ namespace TAs.Domain.Entities
         public string Accent { get; set; } = string.Empty;
         public float Duration { get; set; }
         public string Topics { get; set; } = string.Empty;
-        public ICollection<Progress> Progresses = [];
-        public ICollection<SkillLesson> SkillLessons { get; set; } = [];
-        public ICollection<CategoryLesson> CategoryLessons { get; set; } = [];
 
     }
 }

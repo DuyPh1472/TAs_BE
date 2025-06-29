@@ -37,6 +37,10 @@ foreach (var seeder in seeders)
 // add problem details
 
 app.UseHttpsRedirection();
+
+// Add CORS middleware
+app.UseCors("AllowAll");
+
 // app.MapGroup("/api/identity/").MapIdentityApi<User>();
 
 app.UseAuthorization();
