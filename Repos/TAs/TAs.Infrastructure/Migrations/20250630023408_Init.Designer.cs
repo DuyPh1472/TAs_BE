@@ -12,7 +12,7 @@ using TAs.Infrastructure.Persistence;
 namespace TAs.Infrastructure.Migrations
 {
     [DbContext(typeof(TAsDbContext))]
-    [Migration("20250629100640_Init")]
+    [Migration("20250630023408_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -330,11 +330,17 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<Guid>("LessonId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("ProgressChallenge")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("ProgressStatus")
                         .HasColumnType("boolean");
 
                     b.Property<float>("Score")
                         .HasColumnType("real");
+
+                    b.Property<int>("TotalChallenge")
+                        .HasColumnType("integer");
 
                     b.Property<int>("TotalSentences")
                         .HasColumnType("integer");
@@ -470,9 +476,8 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Level")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -506,6 +511,9 @@ namespace TAs.Infrastructure.Migrations
 
                     b.Property<float>("TargetScore")
                         .HasColumnType("real");
+
+                    b.Property<int>("TotalStudyTime")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");

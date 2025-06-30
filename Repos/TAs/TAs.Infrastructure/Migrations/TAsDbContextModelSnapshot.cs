@@ -327,11 +327,17 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<Guid>("LessonId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("ProgressChallenge")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("ProgressStatus")
                         .HasColumnType("boolean");
 
                     b.Property<float>("Score")
                         .HasColumnType("real");
+
+                    b.Property<int>("TotalChallenge")
+                        .HasColumnType("integer");
 
                     b.Property<int>("TotalSentences")
                         .HasColumnType("integer");
@@ -467,9 +473,8 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Level")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -503,6 +508,9 @@ namespace TAs.Infrastructure.Migrations
 
                     b.Property<float>("TargetScore")
                         .HasColumnType("real");
+
+                    b.Property<int>("TotalStudyTime")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");

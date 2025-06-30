@@ -13,6 +13,5 @@ namespace TAs.Domain.Entities
         public Lesson Lesson { get; set; } = null!;
         [ForeignKey(nameof(CategoryId))]
         public Category Category { get; set; } = null!;
-
     }
 }

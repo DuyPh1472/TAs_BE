@@ -11,6 +11,6 @@ namespace TAs.Application.Users.HandlerErrors
         public static readonly Error LoginFailed = new("LoginFailed", "Invalid credentials");
         public static Error EmailNotExist(string Email) => new("EmailNotExist", $"Email:{Email} not found.");
         public static Error RoleNotExist(string Role) => new("RoleNotExist", $"Role:{Role} does not exist.");
-
+        public static readonly Error InvalidScore = new Error("InvalidScore", "Score must be in the range from 4 to 9.");
     }
 }
