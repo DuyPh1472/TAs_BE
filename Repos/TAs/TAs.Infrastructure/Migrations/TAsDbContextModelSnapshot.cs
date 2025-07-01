@@ -314,10 +314,6 @@ namespace TAs.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CompletedSentences")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -337,9 +333,6 @@ namespace TAs.Infrastructure.Migrations
                         .HasColumnType("real");
 
                     b.Property<int>("TotalChallenge")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TotalSentences")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")

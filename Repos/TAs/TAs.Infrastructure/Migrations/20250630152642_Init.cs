@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -312,8 +311,6 @@ namespace TAs.Infrastructure.Migrations
                     ProgressId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     LessonId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompletedSentences = table.Column<string>(type: "text", nullable: false),
-                    TotalSentences = table.Column<int>(type: "integer", nullable: false),
                     TotalChallenge = table.Column<int>(type: "integer", nullable: false),
                     ProgressChallenge = table.Column<int>(type: "integer", nullable: false),
                     Score = table.Column<float>(type: "real", nullable: false),
