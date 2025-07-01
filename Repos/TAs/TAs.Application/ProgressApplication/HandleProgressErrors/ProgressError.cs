@@ -6,5 +6,7 @@ namespace TAs.Application.ProgressApplication.HandleProgressErrors
     {
         public static Error ProgressNotFound(Guid progressId, int sentenceIndex)
         => new("ProgressNotFound", $"Progress with Id: {progressId} or SentenceIndex with index: {sentenceIndex} does not exist.");
+        public static Error UserNotFound(Guid userId)
+        => new("UserNotFound", $"Progress with User's Id: {userId} does not exist.");
     }
 }

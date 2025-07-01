@@ -5,8 +5,10 @@ using TAs.APi.Response;
 using TAs.Application.ProgressApplication.Commands.Update;
 using TAs.Application.ProgressApplication.DTOs.Queries.GetAll;
 using TAs.Application.ProgressApplication.DTOs.Queries.GetByIdAndSentence;
+using TAs.Application.ProgressApplication.DTOs.Queries.GetProgressByUser;
 using TAs.Application.ProgressApplication.Queries.GetAllProgress;
 using TAs.Application.ProgressApplication.Queries.GetByIdAndSentenceIndex;
+using TAs.Application.ProgressApplication.Queries.GetProgressByUser;
 
 namespace TAs.APi.Controllers
 {
@@ -47,6 +49,20 @@ namespace TAs.APi.Controllers
                 return NotFound(new ApiResponse<GetProgressByIdAndSentenceIndexDTO>
                 (false, null, 404, result.Error.Description));
             return Ok(new ApiResponse<GetProgressByIdAndSentenceIndexDTO>
+                (true, result.Data, 200, "Progress retrieved successfully"));
+        }
+        [HttpGet]
+        [Route("{userId:guid}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiResponse<List<UserProgressDTO>>>> GetProgressesByUSer
+        (Guid userId)
+        {
+            var result =
+             await mediator.Send(new GetProgressByUserQuery(userId));
+            if (!result.IsSuccess)
+                return NotFound(new ApiResponse<UserProgressDTO>
+                (false, null, 404, result.Error.Description));
+            return Ok(new ApiResponse<List<UserProgressDTO>>
                 (true, result.Data, 200, "Progress retrieved successfully"));
         }
     }

@@ -42,5 +42,13 @@ namespace TAs.Infrastructure.Repositories
             && p.LessonId == LessonId);
             return progress;
         }
+
+        public async Task<List<Progress>> GetProgressesByUser(Guid userId)
+        {
+            return await dbContext
+            .Progresses
+            .Include(p => p.Lesson)
+            .Where(p => p.UserId == userId).ToListAsync();
+        }
     }
 }
