@@ -18,6 +18,6 @@ namespace TAs.Domain.Entities
         public User User { get; set; } = null!;
         [ForeignKey(nameof(LessonId))]
         public Lesson Lesson { get; set; } = null!;
-
+        public ICollection<ProgressDetail> ProgressDetails { get; set; } = [];
     }
 }

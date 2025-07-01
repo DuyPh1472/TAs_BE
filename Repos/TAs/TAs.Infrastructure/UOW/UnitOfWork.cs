@@ -123,6 +123,20 @@ namespace TAs.Infrastructure.UOW
             }
         }
 
+        public IProGressDetailRepository _proGressDetailRepository = null!;
+        public IProGressDetailRepository ProGressDetailRepository
+        {
+            get
+            {
+                if (_proGressDetailRepository is null)
+                {
+                    _proGressDetailRepository = new ProGressDetailRepository(context);
+                }
+                return _proGressDetailRepository;
+            }
+        }
+
+
         public void Dispose()
         {
             Dispose(true);

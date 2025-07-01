@@ -12,7 +12,7 @@ using TAs.Infrastructure.Persistence;
 namespace TAs.Infrastructure.Migrations
 {
     [DbContext(typeof(TAsDbContext))]
-    [Migration("20250630152642_Init")]
+    [Migration("20250701041602_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -356,6 +356,40 @@ namespace TAs.Infrastructure.Migrations
                     b.ToTable("Progresses");
                 });
 
+            modelBuilder.Entity("TAs.Domain.Entities.ProgressDetail", b =>
+                {
+                    b.Property<Guid>("ProgressDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("ProgressId")
+                        .HasColumnType("uuid");
+
+                    b.Property<float?>("Score")
+                        .HasColumnType("real");
+
+                    b.Property<int>("SentenceIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserAnswer")
+                        .HasColumnType("text");
+
+                    b.HasKey("ProgressDetailId");
+
+                    b.HasIndex("ProgressId");
+
+                    b.ToTable("ProgressDetails");
+                });
+
             modelBuilder.Entity("TAs.Domain.Entities.Skill", b =>
                 {
                     b.Property<Guid>("Id")
@@ -655,6 +689,17 @@ namespace TAs.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TAs.Domain.Entities.ProgressDetail", b =>
+                {
+                    b.HasOne("TAs.Domain.Entities.Progress", "Progress")
+                        .WithMany("ProgressDetails")
+                        .HasForeignKey("ProgressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Progress");
+                });
+
             modelBuilder.Entity("TAs.Domain.Entities.SkillLesson", b =>
                 {
                     b.HasOne("TAs.Domain.Entities.Lesson", "Lesson")
@@ -708,6 +753,11 @@ namespace TAs.Infrastructure.Migrations
                     b.Navigation("CategoryLessons");
 
                     b.Navigation("SkillLessons");
+                });
+
+            modelBuilder.Entity("TAs.Domain.Entities.Progress", b =>
+                {
+                    b.Navigation("ProgressDetails");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Skill", b =>

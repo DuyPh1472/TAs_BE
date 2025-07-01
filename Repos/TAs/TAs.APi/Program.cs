@@ -1,8 +1,8 @@
 using TAs.Infrastructure.Extensions;
 using TAs.Application.Extensions;
-using TAs.APi.Middlewares;
 using TAs.APi.Extensions;
 using TAs.Infrastructure.Seeder.Skills;
+using TAs.APi.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.AddPresentation();

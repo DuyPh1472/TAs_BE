@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -366,6 +367,30 @@ namespace TAs.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProgressDetails",
+                columns: table => new
+                {
+                    ProgressDetailId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProgressId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SentenceIndex = table.Column<int>(type: "integer", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsCorrect = table.Column<bool>(type: "boolean", nullable: false),
+                    UserAnswer = table.Column<string>(type: "text", nullable: true),
+                    Score = table.Column<float>(type: "real", nullable: true),
+                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProgressDetails", x => x.ProgressDetailId);
+                    table.ForeignKey(
+                        name: "FK_ProgressDetails_Progresses_ProgressId",
+                        column: x => x.ProgressId,
+                        principalTable: "Progresses",
+                        principalColumn: "ProgressId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -412,6 +437,11 @@ namespace TAs.Infrastructure.Migrations
                 name: "IX_CategoryLessons_LessonId",
                 table: "CategoryLessons",
                 column: "LessonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgressDetails_ProgressId",
+                table: "ProgressDetails",
+                column: "ProgressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Progresses_LessonId",
@@ -466,7 +496,7 @@ namespace TAs.Infrastructure.Migrations
                 name: "CategoryLessons");
 
             migrationBuilder.DropTable(
-                name: "Progresses");
+                name: "ProgressDetails");
 
             migrationBuilder.DropTable(
                 name: "SkillLessons");
@@ -481,7 +511,7 @@ namespace TAs.Infrastructure.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Lessons");
+                name: "Progresses");
 
             migrationBuilder.DropTable(
                 name: "Skills");
@@ -491,6 +521,9 @@ namespace TAs.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Lessons");
         }
     }
 }
