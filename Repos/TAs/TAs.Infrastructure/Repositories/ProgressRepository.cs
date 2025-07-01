@@ -14,6 +14,13 @@ namespace TAs.Infrastructure.Repositories
             dbContext = context;
         }
 
+        public async Task<int> CountCompleted(Guid? progressId)
+        {
+            return await dbContext
+       .ProgressDetails
+       .CountAsync(pd => pd.ProgressId == progressId && pd.IsCompleted);
+        }
+
         public async Task<IEnumerable<Progress>> GetAllProgressAsync()
         {
             return await dbContext
@@ -32,6 +39,14 @@ namespace TAs.Infrastructure.Repositories
             .Any(pd => pd.SentenceIndex == sentenceIndex));
 
 
+        }
+
+        public async Task<Progress?> GetProgressByIdAsync(Guid progressId)
+        {
+            return await dbContext
+            .Progresses
+            .Include(p => p.ProgressDetails)
+             .FirstOrDefaultAsync(p => p.ProgressId == progressId);
         }
 
         public async Task<Progress?> GetProgressByUserAndLesson(Guid userId, Guid LessonId)

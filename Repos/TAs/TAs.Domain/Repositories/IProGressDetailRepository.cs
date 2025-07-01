@@ -7,5 +7,7 @@ namespace TAs.Domain.Repositories
     {
         Task<ProgressDetail?> GetByProgressAndSentence(Guid progressId, int SentenceIndex);
         Task<int> CountCompleted(Guid? progressId);
+        Task<List<ProgressDetail>> GetByProgressIdAsync(Guid progressId);
+        Task DeleteByProgressIdAsync(Guid progressId);
     }
 }

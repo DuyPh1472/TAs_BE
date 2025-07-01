@@ -9,5 +9,7 @@ namespace TAs.Domain.Repositories
         Task<IEnumerable<Progress>> GetAllProgressAsync();
         Task<Progress?> GetProgressByIdAndSentenceIndex(Guid progressId, int sentenceIndex);
         Task<List<Progress>> GetProgressesByUser(Guid userId);
+        Task<int> CountCompleted(Guid? progressId);
+        Task<Progress?> GetProgressByIdAsync(Guid progressId);
     }
 }

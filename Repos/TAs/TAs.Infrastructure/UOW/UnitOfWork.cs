@@ -130,7 +130,7 @@ namespace TAs.Infrastructure.UOW
             {
                 if (_proGressDetailRepository is null)
                 {
-                    _proGressDetailRepository = new ProGressDetailRepository(context);
+                    _proGressDetailRepository = new ProgressDetailRepository(context);
                 }
                 return _proGressDetailRepository;
             }

@@ -1,13 +1,47 @@
 using MediatR;
 using TAs.Domain.Result;
+using TAs.Domain.Entities;
+using TAs.Application.Interfaces;
+using TAs.Application.Lessons.HandlerLessonErrors;
 
 namespace TAs.Application.ProgressApplication.Commands.Create
 {
-    public class CreateProgressCommandHandler : IRequestHandler<CreateProgressCommand, Result>
+    public class CreateProgressCommandHandler(IUnitOfWork _unitOfWork)
+     : IRequestHandler<CreateProgressCommand, Result<Guid>>
     {
-        public Task<Result> Handle(CreateProgressCommand request, CancellationToken cancellationToken)
+
+        public async Task<Result<Guid>> Handle(CreateProgressCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var lesson = await _unitOfWork.LessonRepository.GetByIdAsync(request.LessonId);
+            if (lesson == null)
+                return Result<Guid>.Failure(LessonError.IdNotFound(request.LessonId));
+            var totalChallenge = lesson.Sentences.Split('|', StringSplitOptions.RemoveEmptyEntries).Length;
+            var progress = new Progress
+            {
+                ProgressId = Guid.NewGuid(),
+                UserId = request.UserId,
+                LessonId = request.LessonId,
+                TotalChallenge = totalChallenge,
+                ProgressChallenge = 0,
+                Score = 0,
+                ProgressStatus = false,
+                CreatedAt = DateTime.UtcNow
+            };
+             _unitOfWork.ProgressRepository.Add(progress);
+            await _unitOfWork.SaveChangesAsync();
+            for (int i = 1; i <= totalChallenge; i++)
+            {
+                var detail = new ProgressDetail
+                {
+                    ProgressDetailId = Guid.NewGuid(),
+                    ProgressId = progress.ProgressId,
+                    SentenceIndex = i,
+                    IsCompleted = false
+                };
+                 _unitOfWork.ProGressDetailRepository.Add(detail);
+            }
+            await _unitOfWork.SaveChangesAsync();
+            return Result<Guid>.Success(progress.ProgressId);
         }
     }
 }
