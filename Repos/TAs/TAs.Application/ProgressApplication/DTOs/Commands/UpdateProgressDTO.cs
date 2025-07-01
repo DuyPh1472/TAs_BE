@@ -1,4 +1,4 @@
-namespace TAs.Application.ProgressApplication.DTOs
+namespace TAs.Application.ProgressApplication.DTOs.Commands
 {
     public class UpdateProgressDTO
     {

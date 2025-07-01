@@ -17,7 +17,7 @@ namespace TAs.APi.Controllers
     [Authorize]
     public class SkillController(IMediator mediator) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("get-all")]
         [AllowAnonymous]
         public async Task<ActionResult<ApiResponse<IEnumerable<SkillDTO>>>> GetSkills()
         {

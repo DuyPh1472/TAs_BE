@@ -27,7 +27,7 @@ namespace TAs.APi.Controllers
                 return BadRequest(result.Error.Description);
             return Created();
         }
-        [HttpGet]
+        [HttpGet("get-all")]
         [AllowAnonymous]
         public async Task<ActionResult<ApiResponse<IEnumerable<GetAllCategoriesDTO>>>> GetAll()
         {
