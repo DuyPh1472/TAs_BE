@@ -16,10 +16,11 @@ namespace TAs.Infrastructure.Repositories
 
         public async Task<Progress?> GetProgressByUserAndLesson(Guid userId, Guid LessonId)
         {
-            return await dbContext
+            var progress = await dbContext
             .Progresses
             .FirstOrDefaultAsync(p => p.UserId == userId
             && p.LessonId == LessonId);
+            return progress;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace TAs.Application.ProgressApplication.Commands.Update
             var currentUser = userContext.GetCurrentUser();
             var progress = await unitOfWork
             .ProgressRepository
-            .GetProgressByUserAndLesson(request.LessonId, currentUser!.Id);
+            .GetProgressByUserAndLesson(currentUser!.Id, request.LessonId);
             if (progress == null)
             {
                 var lesson = await unitOfWork.LessonRepository.GetByIdAsync(request.LessonId);
