@@ -5,6 +5,6 @@ namespace TAs.Domain.Repositories
 {
     public interface ILessonRepository : IGenericRepository<Lesson>
     {
-        
+        Task<Lesson?> GetLessonsById(Guid lessonId);
     }
 }

@@ -45,17 +45,18 @@ namespace TAs.Application.ProgressApplication.Commands.Update
                 await unitOfWork.SaveChangesAsync();
             }
             var detail = await unitOfWork.ProGressDetailRepository
-            .GetByProgressAndSentence(progress.ProgressId, request.SentenceIndex);
+            .GetByProgressAndSentence(progress.Id, request.SentenceIndex);
             if (detail == null)
             {
                 detail = new ProgressDetail
                 {
-                    ProgressId = progress.ProgressId,
+                    ProgressId = progress.Id,
                     SentenceIndex = request.SentenceIndex,
                     IsCompleted = request.IsCompleted,
                     IsCorrect = request.IsCorrect,
                     UserAnswer = request.UserAnswer,
-                    CompletedAt = DateTime.UtcNow
+                    CompletedAt = DateTime.UtcNow,
+                    CreatedBy = progress.CreatedBy
                 };
                 unitOfWork.ProGressDetailRepository.Add(detail);
                 await unitOfWork.SaveChangesAsync();
@@ -70,7 +71,7 @@ namespace TAs.Application.ProgressApplication.Commands.Update
             }
             // 4. Cập nhật lại ProgressChallenge và trạng thái hoàn thành
             progress.ProgressChallenge = await unitOfWork.ProGressDetailRepository
-            .CountCompleted(progress.ProgressId);
+            .CountCompleted(progress.Id);
             progress.ProgressStatus = (progress.ProgressChallenge == progress.TotalChallenge);
             await unitOfWork.SaveChangesAsync();
             return Result.Success();

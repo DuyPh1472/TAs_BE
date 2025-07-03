@@ -21,7 +21,7 @@ namespace TAs.Application.ProgressApplication.Queries.GetByIdAndSentenceIndex
                 .ProgressNotFound(request.ProgressId, request.SentenceIndex));
             var response = new GetProgressByIdAndSentenceIndexDTO
             {
-                ProgressId = progress.ProgressId,
+                ProgressId = progress.Id,
                 CompletedAt = progress
                 .ProgressDetails
                 .FirstOrDefault(pd => pd.SentenceIndex == request.SentenceIndex)

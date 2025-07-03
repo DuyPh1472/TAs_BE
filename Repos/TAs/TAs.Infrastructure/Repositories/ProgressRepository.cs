@@ -34,7 +34,7 @@ namespace TAs.Infrastructure.Repositories
             return await dbContext
             .Progresses
             .Include(p => p.ProgressDetails)
-            .FirstOrDefaultAsync(p => p.ProgressId == progressId &&
+            .FirstOrDefaultAsync(p => p.Id == progressId &&
              p.ProgressDetails
             .Any(pd => pd.SentenceIndex == sentenceIndex));
 
@@ -46,7 +46,7 @@ namespace TAs.Infrastructure.Repositories
             return await dbContext
             .Progresses
             .Include(p => p.ProgressDetails)
-             .FirstOrDefaultAsync(p => p.ProgressId == progressId);
+             .FirstOrDefaultAsync(p => p.Id == progressId);
         }
 
         public async Task<Progress?> GetProgressByUserAndLesson(Guid userId, Guid LessonId)

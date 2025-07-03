@@ -21,5 +21,6 @@ namespace TAs.Infrastructure.Persistence
         internal DbSet<SkillLesson> SkillLessons { get; set; }
         internal DbSet<UserAchievement> UserAchievements { get; set; }
         internal DbSet<ProgressDetail> ProgressDetails { get; set; }
+        internal DbSet<DictationSentence> DictationSentences { get; set; }
     }
 }

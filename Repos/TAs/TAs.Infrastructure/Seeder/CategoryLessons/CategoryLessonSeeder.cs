@@ -23,29 +23,14 @@ namespace TAs.Infrastructure.Seeder.CategoryLessons
             var adminId = Guid.Parse("ba02df20-a2ca-4f10-be79-8f5fc5bca1da");
             return new List<CategoryLesson>
             {
-              new CategoryLesson{
-                     CategoryLessonId = Guid.NewGuid(),
-                     CategoryId = Guid.Parse("e3e6dffc-7754-457f-b23a-85d76c9faa91"),
-                     LessonId = Guid.Parse("cc329906-85bc-4d3d-8a1c-a6b1d68715b5"),
-                     CreatedAt = today,
-                     CreatedBy = adminId
-                 },
-                 new CategoryLesson{
-                     CategoryLessonId = Guid.NewGuid(),
-                     CategoryId =Guid.Parse("71a9568d-f5d9-4fc8-bac9-283e34b0aa7b"),
-                     LessonId = Guid.Parse("ed9ab41e-7d83-49a3-bc38-c0041d86a382"),
-                     CreatedAt = today,
-                     CreatedBy = adminId
-                 },
-                 new CategoryLesson{
-                     CategoryLessonId = Guid.NewGuid(),
-                     CategoryId = Guid.Parse("6fe3caca-8225-49a3-93d6-79e864789986"),
-                     LessonId = Guid.Parse("6cd1a152-8a9b-4893-a7b9-fcb556397b63"),
-                     CreatedAt = today,
-                     CreatedBy = adminId
-                 }
+                new CategoryLesson{
+                    Id = Guid.NewGuid(),
+                    CategoryId = Guid.Parse("e3e6dffc-7754-457f-b23a-85d76c9faa91"),
+                    LessonId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    CreatedAt = today,
+                    CreatedBy = adminId
+                }
             };
-
         }
 
 

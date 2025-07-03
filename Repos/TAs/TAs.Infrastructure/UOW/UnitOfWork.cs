@@ -1,4 +1,5 @@
 using TAs.Application.Interfaces;
+using TAs.Application.Interfaces.Repositories;
 using TAs.Domain.Repositories;
 using TAs.Infrastructure.Persistence;
 using TAs.Infrastructure.Repositories;

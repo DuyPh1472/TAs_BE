@@ -5,8 +5,8 @@ namespace TAs.Infrastructure.Persistence.GenericRepo
 
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly TAsDbContext _context;
-        private readonly DbSet<T> _entities;
+        protected readonly TAsDbContext _context;
+        protected readonly DbSet<T> _entities;
         public GenericRepository(TAsDbContext context)
         {
             _context = context;

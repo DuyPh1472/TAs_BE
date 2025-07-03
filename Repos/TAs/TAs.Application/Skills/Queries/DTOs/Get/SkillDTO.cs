@@ -4,7 +4,6 @@ namespace TAs.Application.Skills.DTOs
 {
     public class SkillDTO : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = default!;
         public string Path { get; set; } = default!;
         public string Icon { get; set; } = default!;
@@ -22,7 +21,8 @@ namespace TAs.Application.Skills.DTOs
                 Name = skill.Name,
                 Path = skill.Path,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = skill.CreatedBy
             };
         }
     }

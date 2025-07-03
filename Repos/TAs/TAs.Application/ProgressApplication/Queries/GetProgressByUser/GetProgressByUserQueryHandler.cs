@@ -20,12 +20,13 @@ namespace TAs.Application.ProgressApplication.Queries.GetProgressByUser
                 CreatedAt = p.CreatedAt,
                 LessonId = p.LessonId,
                 LessonTitle = p.Lesson.Title,
-                ProgressId = p.ProgressId,
+                ProgressId = p.Id,
                 ProgressChallenge = p.ProgressChallenge,
                 Score = p.Score,
                 TotalChallenge = p.TotalChallenge,
                 ProgressStatus = p.ProgressStatus,
-                UpdatedAt = p.UpdatedAt
+                UpdatedAt = p.UpdatedAt,
+                CreatedBy = p.CreatedBy
             }).ToList();
             return Result<List<UserProgressDTO>>.Success(response);
         }

@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TAs.Domain.Entities
+namespace TAs.Application.Lessons.DTOs
 {
-    public class Lesson : BaseEntity
+    public class GetAllLessonDTO
     {
+        public Guid LessonId { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Level { get; set; } = string.Empty;
@@ -15,9 +13,5 @@ namespace TAs.Domain.Entities
         public string? AudioUrl { get; set; } // audio tổng (nếu có)
         public string? YoutubeUrl { get; set; } // link youtube (nếu có)
         public string? VideoId { get; set; } // id youtube (nếu có)
-        public ICollection<DictationSentence> DictationSentences { get; set; } = [];
-        public ICollection<Progress> Progresses = [];
-        public ICollection<SkillLesson> SkillLessons { get; set; } = [];
-        public ICollection<CategoryLesson> CategoryLessons { get; set; } = [];
     }
 }

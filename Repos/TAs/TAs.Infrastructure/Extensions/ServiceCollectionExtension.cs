@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TAs.Application.Interfaces;
+using TAs.Application.Interfaces.Repositories;
 using TAs.Domain.Entities;
 using TAs.Domain.IGenericRepo;
 using TAs.Domain.Repositories;
@@ -16,6 +17,7 @@ using TAs.Infrastructure.Seeder.IdentityRoles;
 using TAs.Infrastructure.Seeder.IdentityUsers;
 using TAs.Infrastructure.Seeder.IdentityUsersRoles;
 using TAs.Infrastructure.Seeder.Lessons;
+using TAs.Infrastructure.Seeder.Lessons.Services;
 using TAs.Infrastructure.Seeder.Skills;
 using TAs.Infrastructure.UOW;
 namespace TAs.Infrastructure.Extensions;
@@ -46,7 +48,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<IProgressRepository, ProgressRepository>();
         services.AddScoped<ISkillLessonRepository, SkillLessonRepository>();
         services.AddScoped<IUserAchievementRepository, UserAchievementRepository>();
+        services.AddScoped<ILessonSeedService, LessonSeedService>();
         services.AddScoped<IUserRepository, UserRepository>();
-            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
     }
 }

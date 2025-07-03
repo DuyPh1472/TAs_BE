@@ -2,28 +2,26 @@ using TAs.Domain.Entities;
 
 namespace TAs.Application.Categories.DTOs.Retrieval
 {
-    public class GetAllCategoriesDTO : BaseEntity
+    public class GetAllCategoriesDTO
     {
-        public Guid CategoryId { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string Difficult { get; set; } = string.Empty;
+        public string Difficulty { get; set; } = string.Empty;
         public string Accent { get; set; } = string.Empty;
         public float Duration { get; set; }
+        public int LessonsCount { get; set; }
         public static GetAllCategoriesDTO FromEntity(Category category)
         {
             return new GetAllCategoriesDTO
             {
-                CategoryId = category.CategoryId,
+                Id = category.Id,
                 Accent = category.Accent,
                 Description = category.Description,
-                Difficult = category.Difficult,
+                Difficulty = category.Difficult,
                 Duration = category.Duration,
                 Title = category.Title,
-                CreatedAt = category.CreatedAt,
-                UpdatedAt = category.UpdatedAt,
-                CreatedBy = category.CreatedBy,
-                UpdatedBy = category.UpdatedBy
+                LessonsCount = category.CategoryLessons?.Count ?? 0
             };
         }
     }

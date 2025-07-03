@@ -18,14 +18,14 @@ namespace TAs.Application.ProgressApplication.Commands.Create
             var totalChallenge = lesson.Sentences.Split('|', StringSplitOptions.RemoveEmptyEntries).Length;
             var progress = new Progress
             {
-                ProgressId = Guid.NewGuid(),
                 UserId = request.UserId,
                 LessonId = request.LessonId,
                 TotalChallenge = totalChallenge,
                 ProgressChallenge = 0,
                 Score = 0,
                 ProgressStatus = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = lesson.CreatedBy
             };
              _unitOfWork.ProgressRepository.Add(progress);
             await _unitOfWork.SaveChangesAsync();
@@ -33,15 +33,15 @@ namespace TAs.Application.ProgressApplication.Commands.Create
             {
                 var detail = new ProgressDetail
                 {
-                    ProgressDetailId = Guid.NewGuid(),
-                    ProgressId = progress.ProgressId,
+                    ProgressId = progress.Id,
                     SentenceIndex = i,
-                    IsCompleted = false
+                    IsCompleted = false,
+                    CreatedBy = progress.CreatedBy
                 };
                  _unitOfWork.ProGressDetailRepository.Add(detail);
             }
             await _unitOfWork.SaveChangesAsync();
-            return Result<Guid>.Success(progress.ProgressId);
+            return Result<Guid>.Success(progress.Id);
         }
     }
 }

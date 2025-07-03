@@ -16,17 +16,17 @@ namespace TAs.Infrastructure.Migrations
                 name: "Achievements",
                 columns: table => new
                 {
-                    AchievementId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     AchievementName = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Achievements", x => x.AchievementId);
+                    table.PrimaryKey("PK_Achievements", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,27 +83,27 @@ namespace TAs.Infrastructure.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Difficult = table.Column<string>(type: "text", nullable: false),
                     Accent = table.Column<string>(type: "text", nullable: false),
                     Duration = table.Column<float>(type: "real", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Lessons",
                 columns: table => new
                 {
-                    LessonId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Level = table.Column<string>(type: "text", nullable: false),
@@ -111,14 +111,17 @@ namespace TAs.Infrastructure.Migrations
                     Accent = table.Column<string>(type: "text", nullable: false),
                     Duration = table.Column<float>(type: "real", nullable: false),
                     Topics = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AudioUrl = table.Column<string>(type: "text", nullable: true),
+                    YoutubeUrl = table.Column<string>(type: "text", nullable: true),
+                    VideoId = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Lessons", x => x.LessonId);
+                    table.PrimaryKey("PK_Lessons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -131,10 +134,10 @@ namespace TAs.Infrastructure.Migrations
                     Icon = table.Column<string>(type: "text", nullable: false),
                     Color = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -251,22 +254,22 @@ namespace TAs.Infrastructure.Migrations
                 name: "UserAchievements",
                 columns: table => new
                 {
-                    UserAchievementId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     AchievementId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserAchievements", x => x.UserAchievementId);
+                    table.PrimaryKey("PK_UserAchievements", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserAchievements_Achievements_AchievementId",
                         column: x => x.AchievementId,
                         principalTable: "Achievements",
-                        principalColumn: "AchievementId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserAchievements_AspNetUsers_UserId",
@@ -280,28 +283,55 @@ namespace TAs.Infrastructure.Migrations
                 name: "CategoryLessons",
                 columns: table => new
                 {
-                    CategoryLessonId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     LessonId = table.Column<Guid>(type: "uuid", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryLessons", x => x.CategoryLessonId);
+                    table.PrimaryKey("PK_CategoryLessons", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CategoryLessons_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "CategoryId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CategoryLessons_Lessons_LessonId",
                         column: x => x.LessonId,
                         principalTable: "Lessons",
-                        principalColumn: "LessonId",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DictationSentences",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LessonId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    StartTime = table.Column<float>(type: "real", nullable: false),
+                    EndTime = table.Column<float>(type: "real", nullable: false),
+                    AudioUrl = table.Column<string>(type: "text", nullable: true),
+                    Position = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DictationSentences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DictationSentences_Lessons_LessonId",
+                        column: x => x.LessonId,
+                        principalTable: "Lessons",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -309,21 +339,21 @@ namespace TAs.Infrastructure.Migrations
                 name: "Progresses",
                 columns: table => new
                 {
-                    ProgressId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     LessonId = table.Column<Guid>(type: "uuid", nullable: false),
                     TotalChallenge = table.Column<int>(type: "integer", nullable: false),
                     ProgressChallenge = table.Column<int>(type: "integer", nullable: false),
                     Score = table.Column<float>(type: "real", nullable: false),
                     ProgressStatus = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Progresses", x => x.ProgressId);
+                    table.PrimaryKey("PK_Progresses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Progresses_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -334,7 +364,7 @@ namespace TAs.Infrastructure.Migrations
                         name: "FK_Progresses_Lessons_LessonId",
                         column: x => x.LessonId,
                         principalTable: "Lessons",
-                        principalColumn: "LessonId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -342,22 +372,22 @@ namespace TAs.Infrastructure.Migrations
                 name: "SkillLessons",
                 columns: table => new
                 {
-                    SkillLessonId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     SkillId = table.Column<Guid>(type: "uuid", nullable: false),
                     LessonId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SkillLessons", x => x.SkillLessonId);
+                    table.PrimaryKey("PK_SkillLessons", x => x.Id);
                     table.ForeignKey(
                         name: "FK_SkillLessons_Lessons_LessonId",
                         column: x => x.LessonId,
                         principalTable: "Lessons",
-                        principalColumn: "LessonId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SkillLessons_Skills_SkillId",
@@ -371,23 +401,27 @@ namespace TAs.Infrastructure.Migrations
                 name: "ProgressDetails",
                 columns: table => new
                 {
-                    ProgressDetailId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ProgressId = table.Column<Guid>(type: "uuid", nullable: false),
                     SentenceIndex = table.Column<int>(type: "integer", nullable: false),
                     IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
                     IsCorrect = table.Column<bool>(type: "boolean", nullable: false),
                     UserAnswer = table.Column<string>(type: "text", nullable: true),
                     Score = table.Column<float>(type: "real", nullable: true),
-                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProgressDetails", x => x.ProgressDetailId);
+                    table.PrimaryKey("PK_ProgressDetails", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProgressDetails_Progresses_ProgressId",
                         column: x => x.ProgressId,
                         principalTable: "Progresses",
-                        principalColumn: "ProgressId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -436,6 +470,11 @@ namespace TAs.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_CategoryLessons_LessonId",
                 table: "CategoryLessons",
+                column: "LessonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DictationSentences_LessonId",
+                table: "DictationSentences",
                 column: "LessonId");
 
             migrationBuilder.CreateIndex(
@@ -494,6 +533,9 @@ namespace TAs.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "CategoryLessons");
+
+            migrationBuilder.DropTable(
+                name: "DictationSentences");
 
             migrationBuilder.DropTable(
                 name: "ProgressDetails");

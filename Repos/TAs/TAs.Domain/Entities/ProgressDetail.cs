@@ -1,13 +1,9 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TAs.Domain.Entities
 {
-    public class ProgressDetail
+    public class ProgressDetail : BaseEntity
     {
-        [Key]
-        public Guid ProgressDetailId { get; set; }
-
         public Guid ProgressId { get; set; }
         [ForeignKey(nameof(ProgressId))]
         public Progress Progress { get; set; } = null!;

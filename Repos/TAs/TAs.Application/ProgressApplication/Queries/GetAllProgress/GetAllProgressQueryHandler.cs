@@ -16,7 +16,7 @@ namespace TAs.Application.ProgressApplication.Queries.GetAllProgress
             .GetAllProgressAsync();
             var result = queries.Select(p => new GetAllProgressDTO
             {
-                ProgressId = p.ProgressId,
+                ProgressId = p.Id,
                 CompletedAt = p.ProgressDetails
                        .Where(pd => pd.CompletedAt.HasValue)
                        .Select(pd => pd.CompletedAt!.Value)

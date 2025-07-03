@@ -12,7 +12,7 @@ using TAs.Infrastructure.Persistence;
 namespace TAs.Infrastructure.Migrations
 {
     [DbContext(typeof(TAsDbContext))]
-    [Migration("20250701041602_Init")]
+    [Migration("20250703045651_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -157,7 +157,7 @@ namespace TAs.Infrastructure.Migrations
 
             modelBuilder.Entity("TAs.Domain.Entities.Achievement", b =>
                 {
-                    b.Property<Guid>("AchievementId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -165,7 +165,7 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
@@ -175,20 +175,20 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.HasKey("AchievementId");
+                    b.HasKey("Id");
 
                     b.ToTable("Achievements");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Category", b =>
                 {
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -196,7 +196,7 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
@@ -217,27 +217,27 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.HasKey("CategoryId");
+                    b.HasKey("Id");
 
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.CategoryLesson", b =>
                 {
-                    b.Property<Guid>("CategoryLessonId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
@@ -246,13 +246,13 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<Guid>("LessonId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.HasKey("CategoryLessonId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
@@ -261,9 +261,53 @@ namespace TAs.Infrastructure.Migrations
                     b.ToTable("CategoryLessons");
                 });
 
+            modelBuilder.Entity("TAs.Domain.Entities.DictationSentence", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AudioUrl")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<float>("EndTime")
+                        .HasColumnType("real");
+
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<float>("StartTime")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("DictationSentences");
+                });
+
             modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>
                 {
-                    b.Property<Guid>("LessonId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -271,7 +315,10 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<string>("AudioUrl")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
@@ -300,24 +347,30 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.HasKey("LessonId");
+                    b.Property<string>("VideoId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("YoutubeUrl")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Progress", b =>
                 {
-                    b.Property<Guid>("ProgressId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
@@ -338,16 +391,16 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<int>("TotalChallenge")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("ProgressId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LessonId");
 
@@ -358,12 +411,18 @@ namespace TAs.Infrastructure.Migrations
 
             modelBuilder.Entity("TAs.Domain.Entities.ProgressDetail", b =>
                 {
-                    b.Property<Guid>("ProgressDetailId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("CompletedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
@@ -380,10 +439,16 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<int>("SentenceIndex")
                         .HasColumnType("integer");
 
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("UserAnswer")
                         .HasColumnType("text");
 
-                    b.HasKey("ProgressDetailId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProgressId");
 
@@ -400,7 +465,7 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
@@ -422,10 +487,10 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -435,11 +500,11 @@ namespace TAs.Infrastructure.Migrations
 
             modelBuilder.Entity("TAs.Domain.Entities.SkillLesson", b =>
                 {
-                    b.Property<Guid>("SkillLessonId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
@@ -451,13 +516,13 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<Guid>("SkillId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.HasKey("SkillLessonId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LessonId");
 
@@ -569,29 +634,29 @@ namespace TAs.Infrastructure.Migrations
 
             modelBuilder.Entity("TAs.Domain.Entities.UserAchievement", b =>
                 {
-                    b.Property<Guid>("UserAchievementId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("AchievementId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("UserAchievementId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AchievementId");
 
@@ -666,6 +731,17 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("TAs.Domain.Entities.DictationSentence", b =>
+                {
+                    b.HasOne("TAs.Domain.Entities.Lesson", "Lesson")
+                        .WithMany("DictationSentences")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Lesson");
                 });
@@ -751,6 +827,8 @@ namespace TAs.Infrastructure.Migrations
             modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>
                 {
                     b.Navigation("CategoryLessons");
+
+                    b.Navigation("DictationSentences");
 
                     b.Navigation("SkillLessons");
                 });

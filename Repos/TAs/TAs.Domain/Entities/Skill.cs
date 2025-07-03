@@ -4,8 +4,6 @@ namespace TAs.Domain.Entities
 {
     public class Skill : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
         public required string Name { get; set; }
         public required string Path { get; set; }
         public required string Icon { get; set; }
