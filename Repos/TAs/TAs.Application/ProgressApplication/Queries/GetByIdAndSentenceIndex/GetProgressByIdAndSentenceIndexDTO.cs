@@ -1,8 +1,6 @@
-using TAs.Domain.Entities;
-
-namespace TAs.Application.ProgressApplication.DTOs.Queries.GetProgressByUser
+namespace TAs.Application.ProgressApplication.Queries.GetByIdAndSentenceIndex
 {
-    public class UserProgressDTO : BaseEntity
+    public class GetProgressByIdAndSentenceIndexDTO
     {
         public Guid ProgressId { get; set; }
         public Guid LessonId { get; set; }
@@ -15,9 +13,5 @@ namespace TAs.Application.ProgressApplication.DTOs.Queries.GetProgressByUser
         public DateTimeOffset? StartedAt { get; set; }
         public DateTimeOffset? CompletedAt { get; set; }
         public DateTimeOffset? LastUpdatedAt { get; set; }
-        public string LessonTitle { get; set; } = string.Empty;
-        public int TotalChallenge { get; set; }
-        public int ProgressChallenge { get; set; }
-        public bool ProgressStatus { get; set; }
     }
 }

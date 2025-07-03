@@ -7,7 +7,8 @@ using TAs.Infrastructure.Persistence.GenericRepo;
 
 namespace TAs.Infrastructure.Repositories
 {
-    public class CategoryRepository(TAsDbContext context) : GenericRepository<Category>(context), ICategoryRepository
+    public class CategoryRepository(TAsDbContext context) 
+    : GenericRepository<Category>(context), ICategoryRepository
     {
         public async Task<GetCategoryIdDTO?> GetCategoryByIdAsync(Guid categoryId)
         {

@@ -6,12 +6,10 @@ using TAs.Application.ProgressApplication.Commands;
 using TAs.Application.ProgressApplication.Commands.Create;
 using TAs.Application.ProgressApplication.Commands.Update;
 using TAs.Application.ProgressApplication.DTOs;
-using TAs.Application.ProgressApplication.DTOs.Queries.GetByIdAndSentence;
 using TAs.Application.ProgressApplication.DTOs.Queries.GetProgressByUser;
 using TAs.Application.ProgressApplication.Queries;
 using TAs.Application.ProgressApplication.Queries.GetByIdAndSentenceIndex;
 using TAs.Application.ProgressApplication.Queries.GetProgressByUser;
-using TAs.Application.ProgressApplication.Queries.GetProgressDetail;
 
 namespace TAs.APi.Controllers
 {
@@ -41,21 +39,20 @@ namespace TAs.APi.Controllers
         //     (true, result.Data, 200, "Progress retrieved successfully"));
         // }
         [HttpGet]
-        [Route("{progressId:guid}/sentence/{sentenceIndex:int}")]
+        [Route("{progressId:guid}")]
         [AllowAnonymous]
-        public async Task<ActionResult<ApiResponse<GetProgressByIdAndSentenceIndexDTO>>> GetByIdAndSentence
-        (Guid progressId, int sentenceIndex)
+        public async Task<ActionResult<ApiResponse<GetProgressByIdAndSentenceIndexDTO>>> GetById(
+            Guid progressId)
         {
-            var result =
-             await mediator.Send(new GetProgressByIdAndSentenceQuery(progressId, sentenceIndex));
+            var result = await mediator.Send(new GetProgressByIdAndSentenceQuery(progressId, 0));
             if (!result.IsSuccess)
                 return NotFound(new ApiResponse<GetProgressByIdAndSentenceIndexDTO>
-                (false, null, 404, result.Error.Description));
+                    (false, null, 404, result.Error.Description));
             return Ok(new ApiResponse<GetProgressByIdAndSentenceIndexDTO>
                 (true, result.Data, 200, "Progress retrieved successfully"));
         }
         [HttpGet]
-        [Route("{userId:guid}")]
+        [Route("user/{userId:guid}")]
         [AllowAnonymous]
         public async Task<ActionResult<ApiResponse<List<UserProgressDTO>>>> GetProgressesByUSer
         (Guid userId)
@@ -75,15 +72,6 @@ namespace TAs.APi.Controllers
             if (!result.IsSuccess)
                 return BadRequest(new ApiResponse<Guid>(false, Guid.Empty, 400, result.Error.Description));
             return Ok(new ApiResponse<Guid>(true, result.Data, 200, "Progress created successfully"));
-        }
-        [HttpGet("{progressId:guid}/sentences")]
-        [AllowAnonymous]
-        public async Task<ActionResult<ApiResponse<List<ProgressDetailDTO>>>> GetProgressDetails(Guid progressId)
-        {
-            var result = await mediator.Send(new GetProgressDetailsQuery(progressId));
-            if (!result.IsSuccess)
-                return NotFound(new ApiResponse<List<ProgressDetailDTO>>(false, null, 404, result.Error.Description));
-            return Ok(new ApiResponse<List<ProgressDetailDTO>>(true, result.Data, 200, "Progress details retrieved successfully"));
         }
         [HttpGet("{progressId:guid}/completed-count")]
         [AllowAnonymous]

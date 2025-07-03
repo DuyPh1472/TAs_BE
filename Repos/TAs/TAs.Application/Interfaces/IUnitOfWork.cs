@@ -1,5 +1,4 @@
 using TAs.Application.Interfaces.Repositories;
-using TAs.Domain.Repositories;
 
 namespace TAs.Application.Interfaces
 {
@@ -14,7 +13,6 @@ namespace TAs.Application.Interfaces
         ISkillLessonRepository SkillLessonRepository { get; }
         IUserRepository UserRepository { get; }
         IUserAchievementRepository UserAchievementRepository { get; }
-        IProGressDetailRepository ProGressDetailRepository { get; }
         Task SaveChangesAsync();
     }
 

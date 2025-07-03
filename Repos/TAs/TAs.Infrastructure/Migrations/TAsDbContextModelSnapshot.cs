@@ -367,11 +367,20 @@ namespace TAs.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("CurrentSentence")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("LessonId")
                         .HasColumnType("uuid");
@@ -384,6 +393,9 @@ namespace TAs.Infrastructure.Migrations
 
                     b.Property<float>("Score")
                         .HasColumnType("real");
+
+                    b.Property<DateTimeOffset?>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("TotalChallenge")
                         .HasColumnType("integer");
@@ -404,52 +416,6 @@ namespace TAs.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Progresses");
-                });
-
-            modelBuilder.Entity("TAs.Domain.Entities.ProgressDetail", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("ProgressId")
-                        .HasColumnType("uuid");
-
-                    b.Property<float?>("Score")
-                        .HasColumnType("real");
-
-                    b.Property<int>("SentenceIndex")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("UserAnswer")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProgressId");
-
-                    b.ToTable("ProgressDetails");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Skill", b =>
@@ -762,17 +728,6 @@ namespace TAs.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TAs.Domain.Entities.ProgressDetail", b =>
-                {
-                    b.HasOne("TAs.Domain.Entities.Progress", "Progress")
-                        .WithMany("ProgressDetails")
-                        .HasForeignKey("ProgressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Progress");
-                });
-
             modelBuilder.Entity("TAs.Domain.Entities.SkillLesson", b =>
                 {
                     b.HasOne("TAs.Domain.Entities.Lesson", "Lesson")
@@ -828,11 +783,6 @@ namespace TAs.Infrastructure.Migrations
                     b.Navigation("DictationSentences");
 
                     b.Navigation("SkillLessons");
-                });
-
-            modelBuilder.Entity("TAs.Domain.Entities.Progress", b =>
-                {
-                    b.Navigation("ProgressDetails");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Skill", b =>

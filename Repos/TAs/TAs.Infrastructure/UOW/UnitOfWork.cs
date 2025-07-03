@@ -1,6 +1,5 @@
 using TAs.Application.Interfaces;
 using TAs.Application.Interfaces.Repositories;
-using TAs.Domain.Repositories;
 using TAs.Infrastructure.Persistence;
 using TAs.Infrastructure.Repositories;
 
@@ -123,20 +122,6 @@ namespace TAs.Infrastructure.UOW
                 return _userAchievementRepository;
             }
         }
-
-        public IProGressDetailRepository _proGressDetailRepository = null!;
-        public IProGressDetailRepository ProGressDetailRepository
-        {
-            get
-            {
-                if (_proGressDetailRepository is null)
-                {
-                    _proGressDetailRepository = new ProgressDetailRepository(context);
-                }
-                return _proGressDetailRepository;
-            }
-        }
-
 
         public void Dispose()
         {

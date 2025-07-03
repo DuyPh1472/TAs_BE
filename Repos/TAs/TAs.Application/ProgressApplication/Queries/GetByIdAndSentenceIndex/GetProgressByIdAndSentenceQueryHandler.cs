@@ -22,18 +22,16 @@ namespace TAs.Application.ProgressApplication.Queries.GetByIdAndSentenceIndex
             var response = new GetProgressByIdAndSentenceIndexDTO
             {
                 ProgressId = progress.Id,
-                CompletedAt = progress
-                .ProgressDetails
-                .FirstOrDefault(pd => pd.SentenceIndex == request.SentenceIndex)
-                ?.CompletedAt,
-                IsCompleted = progress.ProgressDetails
-               .Where(pd => pd.SentenceIndex == request.SentenceIndex)
-               .Select(pd => pd.IsCompleted)
-               .FirstOrDefault(),
-                SentenceIndex = progress.ProgressDetails
-               .Where(pd => pd.SentenceIndex == request.SentenceIndex)
-               .Select(pd => pd.SentenceIndex)
-               .FirstOrDefault()
+                LessonId = progress.LessonId,
+                UserId = progress.UserId,
+                CurrentSentence = progress.CurrentSentence,
+                CompletedSentences = progress.ProgressChallenge,
+                TotalSentences = progress.TotalChallenge,
+                Score = progress.Score,
+                Status = progress.ProgressStatus ? "completed" : "in_progress",
+                StartedAt = progress.StartedAt,
+                CompletedAt = progress.CompletedAt,
+                LastUpdatedAt = progress.UpdatedAt
             };
             return Result<GetProgressByIdAndSentenceIndexDTO>.Success(response);
         }

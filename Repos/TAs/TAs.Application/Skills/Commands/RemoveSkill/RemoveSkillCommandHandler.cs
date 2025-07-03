@@ -1,6 +1,6 @@
 using MediatR;
+using TAs.Application.Interfaces.Repositories;
 using TAs.Application.Skills.HandleError;
-using TAs.Domain.Repositories;
 using TAs.Domain.Result;
 
 namespace TAs.Application.Skills.Commands.RemoveSkill
@@ -12,7 +12,7 @@ namespace TAs.Application.Skills.Commands.RemoveSkill
         {
             var skill = await skillRepository.GetByIdAsync(request.skillId);
             if (skill is null)
-            return Result.Failure(SkillErrors.IdNotFound(request.skillId));
+                return Result.Failure(SkillErrors.IdNotFound(request.skillId));
             skillRepository.Delete(skill);
             await skillRepository.SaveChangeAsync();
             return Result.Success();

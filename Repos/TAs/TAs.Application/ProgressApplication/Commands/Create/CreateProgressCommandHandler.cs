@@ -25,21 +25,12 @@ namespace TAs.Application.ProgressApplication.Commands.Create
                 Score = 0,
                 ProgressStatus = false,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = lesson.CreatedBy
+                CreatedBy = lesson.CreatedBy,
+                StartedAt = DateTime.UtcNow,
+                CurrentSentence = 0,
+                LastUpdatedAt = DateTime.UtcNow
             };
              _unitOfWork.ProgressRepository.Add(progress);
-            await _unitOfWork.SaveChangesAsync();
-            for (int i = 1; i <= totalChallenge; i++)
-            {
-                var detail = new ProgressDetail
-                {
-                    ProgressId = progress.Id,
-                    SentenceIndex = i,
-                    IsCompleted = false,
-                    CreatedBy = progress.CreatedBy
-                };
-                 _unitOfWork.ProGressDetailRepository.Add(detail);
-            }
             await _unitOfWork.SaveChangesAsync();
             return Result<Guid>.Success(progress.Id);
         }

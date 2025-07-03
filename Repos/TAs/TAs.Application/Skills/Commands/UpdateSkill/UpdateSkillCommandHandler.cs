@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using TAs.Application.Interfaces.Repositories;
 using TAs.Application.Skills.HandleError;
 using TAs.Application.Users;
-using TAs.Domain.Repositories;
 using TAs.Domain.Result;
 namespace TAs.Application.Skills.Commands.UpdateSkill
 {

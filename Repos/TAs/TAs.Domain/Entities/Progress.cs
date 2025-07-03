@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TAs.Domain.Entities
@@ -12,10 +11,13 @@ namespace TAs.Domain.Entities
         public int ProgressChallenge { get; set; }
         public float Score { get; set; }
         public bool ProgressStatus { get; set; }
+        public int CurrentSentence { get; set; }
+        public DateTimeOffset? StartedAt { get; set; }
+        public DateTimeOffset? CompletedAt { get; set; }
+        public DateTimeOffset? LastUpdatedAt { get; set; }
         [ForeignKey(nameof(UserId))]
         public User User { get; set; } = null!;
         [ForeignKey(nameof(LessonId))]
         public Lesson Lesson { get; set; } = null!;
-        public ICollection<ProgressDetail> ProgressDetails { get; set; } = [];
     }
 }

@@ -346,6 +346,10 @@ namespace TAs.Infrastructure.Migrations
                     ProgressChallenge = table.Column<int>(type: "integer", nullable: false),
                     Score = table.Column<float>(type: "real", nullable: false),
                     ProgressStatus = table.Column<bool>(type: "boolean", nullable: false),
+                    CurrentSentence = table.Column<int>(type: "integer", nullable: false),
+                    StartedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CompletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LastUpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
@@ -393,34 +397,6 @@ namespace TAs.Infrastructure.Migrations
                         name: "FK_SkillLessons_Skills_SkillId",
                         column: x => x.SkillId,
                         principalTable: "Skills",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProgressDetails",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProgressId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SentenceIndex = table.Column<int>(type: "integer", nullable: false),
-                    IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
-                    IsCorrect = table.Column<bool>(type: "boolean", nullable: false),
-                    UserAnswer = table.Column<string>(type: "text", nullable: true),
-                    Score = table.Column<float>(type: "real", nullable: true),
-                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProgressDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProgressDetails_Progresses_ProgressId",
-                        column: x => x.ProgressId,
-                        principalTable: "Progresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -478,11 +454,6 @@ namespace TAs.Infrastructure.Migrations
                 column: "LessonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProgressDetails_ProgressId",
-                table: "ProgressDetails",
-                column: "ProgressId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Progresses_LessonId",
                 table: "Progresses",
                 column: "LessonId");
@@ -538,7 +509,7 @@ namespace TAs.Infrastructure.Migrations
                 name: "DictationSentences");
 
             migrationBuilder.DropTable(
-                name: "ProgressDetails");
+                name: "Progresses");
 
             migrationBuilder.DropTable(
                 name: "SkillLessons");
@@ -553,7 +524,7 @@ namespace TAs.Infrastructure.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Progresses");
+                name: "Lessons");
 
             migrationBuilder.DropTable(
                 name: "Skills");
@@ -563,9 +534,6 @@ namespace TAs.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Lessons");
         }
     }
 }

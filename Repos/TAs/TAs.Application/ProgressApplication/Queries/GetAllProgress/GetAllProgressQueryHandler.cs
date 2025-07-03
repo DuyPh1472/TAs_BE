@@ -17,16 +17,16 @@ namespace TAs.Application.ProgressApplication.Queries.GetAllProgress
             var result = queries.Select(p => new GetAllProgressDTO
             {
                 ProgressId = p.Id,
-                CompletedAt = p.ProgressDetails
-                       .Where(pd => pd.CompletedAt.HasValue)
-                       .Select(pd => pd.CompletedAt!.Value)
-                       .ToList(),
-                IsCompleted = p.ProgressDetails
-                       .Select(pd => pd.IsCompleted)
-                       .ToList(),
-                SentenceIndex = p.ProgressDetails
-                       .Select(pd => pd.SentenceIndex)
-                       .ToList()
+                LessonId = p.LessonId,
+                UserId = p.UserId,
+                CurrentSentence = p.CurrentSentence,
+                CompletedSentences = p.ProgressChallenge,
+                TotalSentences = p.TotalChallenge,
+                Score = p.Score,
+                Status = p.ProgressStatus ? "completed" : "in_progress",
+                StartedAt = p.StartedAt,
+                CompletedAt = p.CompletedAt,
+                LastUpdatedAt = p.UpdatedAt
             }).ToList();
 
             return Result<List<GetAllProgressDTO>>.Success(result);

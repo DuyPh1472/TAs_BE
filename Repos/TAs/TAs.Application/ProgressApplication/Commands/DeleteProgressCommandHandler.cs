@@ -14,8 +14,7 @@ namespace TAs.Application.ProgressApplication.Commands
             var progress = await unitOfWork.ProgressRepository.GetProgressByIdAsync(request.ProgressId);
             if (progress == null)
                 return Result.Failure(ProgressError.ProgressIdNotFound(request.ProgressId));
-            await unitOfWork.ProGressDetailRepository.DeleteByProgressIdAsync(request.ProgressId);
-             unitOfWork.ProgressRepository.Delete(progress);
+            unitOfWork.ProgressRepository.Delete(progress);
             await unitOfWork.SaveChangesAsync();
             return Result.Success();
         }

@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using TAs.Application.Interfaces;
 using TAs.Application.Skills.HandleError;
@@ -44,35 +43,11 @@ namespace TAs.Application.ProgressApplication.Commands.Update
                 unitOfWork.ProgressRepository.Add(progress);
                 await unitOfWork.SaveChangesAsync();
             }
-            var detail = await unitOfWork.ProGressDetailRepository
-            .GetByProgressAndSentence(progress.Id, request.SentenceIndex);
-            if (detail == null)
-            {
-                detail = new ProgressDetail
-                {
-                    ProgressId = progress.Id,
-                    SentenceIndex = request.SentenceIndex,
-                    IsCompleted = request.IsCompleted,
-                    IsCorrect = request.IsCorrect,
-                    UserAnswer = request.UserAnswer,
-                    CompletedAt = DateTime.UtcNow,
-                    CreatedBy = progress.CreatedBy
-                };
-                unitOfWork.ProGressDetailRepository.Add(detail);
-                await unitOfWork.SaveChangesAsync();
-            }
-            else
-            {
-                detail.IsCompleted = request.IsCompleted;
-                detail.IsCorrect = request.IsCorrect;
-                detail.UserAnswer = request.UserAnswer;
-                detail.CompletedAt = DateTime.UtcNow;
-                unitOfWork.ProGressDetailRepository.Update(detail);
-            }
-            // 4. Cập nhật lại ProgressChallenge và trạng thái hoàn thành
-            progress.ProgressChallenge = await unitOfWork.ProGressDetailRepository
-            .CountCompleted(progress.Id);
+            
             progress.ProgressStatus = (progress.ProgressChallenge == progress.TotalChallenge);
+            progress.LastUpdatedAt = DateTimeOffset.UtcNow;
+            if (progress.ProgressStatus && progress.CompletedAt == null)
+                progress.CompletedAt = DateTimeOffset.UtcNow;
             await unitOfWork.SaveChangesAsync();
             return Result.Success();
         }

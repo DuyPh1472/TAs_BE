@@ -6,7 +6,6 @@ using TAs.Application.Interfaces;
 using TAs.Application.Interfaces.Repositories;
 using TAs.Domain.Entities;
 using TAs.Domain.IGenericRepo;
-using TAs.Domain.Repositories;
 using TAs.Infrastructure.Authorization;
 using TAs.Infrastructure.Persistence;
 using TAs.Infrastructure.Persistence.GenericRepo;

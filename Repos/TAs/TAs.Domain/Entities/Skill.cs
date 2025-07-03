@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace TAs.Domain.Entities
 {
     public class Skill : BaseEntity

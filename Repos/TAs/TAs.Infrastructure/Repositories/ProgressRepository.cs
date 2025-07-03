@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using TAs.Application.Interfaces.Repositories;
 using TAs.Domain.Entities;
-using TAs.Domain.Repositories;
 using TAs.Infrastructure.Persistence;
 using TAs.Infrastructure.Persistence.GenericRepo;
 
@@ -16,36 +16,28 @@ namespace TAs.Infrastructure.Repositories
 
         public async Task<int> CountCompleted(Guid? progressId)
         {
-            return await dbContext
-       .ProgressDetails
-       .CountAsync(pd => pd.ProgressId == progressId && pd.IsCompleted);
+            if (progressId.HasValue)
+                return await dbContext.Progresses.CountAsync(p => p.Id == progressId && p.ProgressStatus);
+            else
+                return await dbContext.Progresses.CountAsync(p => p.ProgressStatus);
         }
 
         public async Task<IEnumerable<Progress>> GetAllProgressAsync()
         {
             return await dbContext
             .Progresses
-            .Include(p => p.ProgressDetails)
             .ToListAsync();
         }
 
         public async Task<Progress?> GetProgressByIdAndSentenceIndex(Guid progressId, int sentenceIndex)
         {
-            return await dbContext
-            .Progresses
-            .Include(p => p.ProgressDetails)
-            .FirstOrDefaultAsync(p => p.Id == progressId &&
-             p.ProgressDetails
-            .Any(pd => pd.SentenceIndex == sentenceIndex));
-
-
+            return await dbContext.Progresses.FirstOrDefaultAsync(p => p.Id == progressId);
         }
 
         public async Task<Progress?> GetProgressByIdAsync(Guid progressId)
         {
             return await dbContext
             .Progresses
-            .Include(p => p.ProgressDetails)
              .FirstOrDefaultAsync(p => p.Id == progressId);
         }
 
@@ -62,7 +54,6 @@ namespace TAs.Infrastructure.Repositories
         {
             return await dbContext
             .Progresses
-            .Include(p => p.Lesson)
             .Where(p => p.UserId == userId).ToListAsync();
         }
     }
