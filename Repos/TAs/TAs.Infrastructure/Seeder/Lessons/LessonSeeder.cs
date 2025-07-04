@@ -11,39 +11,35 @@ namespace TAs.Infrastructure.Seeder.Lessons
         {
             if (!await dbContext.Lessons.AnyAsync())
             {
-                var lessonId = Guid.Parse("14540000-0000-0000-0000-000000000000");
-                var categoryId = Guid.Parse("1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e");
                 var adminId = Guid.Parse("ba02df20-a2ca-4f10-be79-8f5fc5bca1da");
-                var lesson = new Lesson
+                // Lấy CategoryId theo tên (đảm bảo đã seed Category trước)
+                var categories = dbContext.Categories.ToList();
+                Guid GetCategoryId(string title) => categories.First(c => c.Title == title).Id;
+                var lessons = new List<Lesson>
                 {
-                    Id = lessonId,
-                    CategoryId = categoryId,
-                    Title = "5 tips to improve your critical thinking",
-                    Description = "5 tips to improve your critical thinking - Samantha Agoos",
-                    Level = "C1",
-                    Accent = "American",
-                    Duration = 251.66f,
-                    Topics = "Critical Thinking, TED-Ed",
-                    AudioUrl = null,
-                    YoutubeUrl = "https://www.youtube.com/watch?v=dItUGF8GdTw",
-                    VideoId = "dItUGF8GdTw",
-                    CreatedBy = adminId
+                    new Lesson { Title = "Canada's Multiculturalism", Description = "A reading about Canadian culture.", Level = "B2", Accent = "North American", Duration = 7.5f, Topics = "Culture, Canada", CreatedBy = adminId, CategoryId = GetCategoryId("Short Stories") },
+                    new Lesson { Title = "IELTS Writing Task 2 Sample", Description = "Sample IELTS Writing Task 2 essay.", Level = "C1", Accent = "British", Duration = 8.0f, Topics = "IELTS, Writing", CreatedBy = adminId, CategoryId = GetCategoryId("IELTS Writing") },
+                    new Lesson { Title = "IELTS Listening Section 1", Description = "IELTS Listening practice section 1.", Level = "B2", Accent = "American", Duration = 9.0f, Topics = "IELTS, Listening", CreatedBy = adminId, CategoryId = GetCategoryId("IELTS Listening") },
+                    new Lesson { Title = "Academic Word List 1", Description = "First set of academic vocabulary.", Level = "B1", Accent = "International", Duration = 6.0f, Topics = "Vocabulary, Academic", CreatedBy = adminId, CategoryId = GetCategoryId("Academic Vocabulary") },
+                    new Lesson { Title = "Ordering Food", Description = "A daily speaking practice lesson.", Level = "A2", Accent = "American", Duration = 5.0f, Topics = "Speaking, Food", CreatedBy = adminId, CategoryId = GetCategoryId("Daily Speaking") },
+                    new Lesson { Title = "Present Simple Tense", Description = "Grammar basics: present simple.", Level = "A1", Accent = "International", Duration = 4.0f, Topics = "Grammar, Present Simple", CreatedBy = adminId, CategoryId = GetCategoryId("Grammar Basics") },
+                    new Lesson { Title = "Dictation: Daily Routine", Description = "Dictation practice about daily routines.", Level = "B1", Accent = "American", Duration = 10.0f, Topics = "Dictation, Routine", CreatedBy = adminId, CategoryId = GetCategoryId("Dictation Practice") }
                 };
-                await dbContext.Lessons.AddAsync(lesson);
+                await dbContext.Lessons.AddRangeAsync(lessons);
                 await dbContext.SaveChangesAsync();
 
-                var dictationSentences = new List<DictationSentence>
+                // Seed DictationSentence cho lesson thuộc category 'Dictation Practice'
+                var dictationLesson = dbContext.Lessons.FirstOrDefault(l => l.Title == "Dictation: Daily Routine");
+                if (dictationLesson != null)
                 {
-                    new DictationSentence { Id = Guid.NewGuid(), LessonId = lessonId, Text = "Every day, a sea of decisions stretches before us.", StartTime = 11.11f, EndTime = 14.93f, AudioUrl = null, Position = 1 , CreatedBy =adminId},
-                    new DictationSentence { Id = Guid.NewGuid(), LessonId = lessonId, Text = "Some are small and unimportant,", StartTime = 14.93f, EndTime = 16.8f, AudioUrl = null, Position = 2 , CreatedBy =adminId},
-                    new DictationSentence { Id = Guid.NewGuid(), LessonId = lessonId, Text = "but others have a larger impact on our lives.", StartTime = 16.8f, EndTime = 19.25f, AudioUrl = null, Position = 3 , CreatedBy =adminId},
-                    new DictationSentence { Id = Guid.NewGuid(), LessonId = lessonId, Text = "For example, which politician should I vote for?", StartTime = 19.25f, EndTime = 22.05f, AudioUrl = null, Position = 4 , CreatedBy =adminId},
-                    new DictationSentence { Id = Guid.NewGuid(), LessonId = lessonId, Text = "Should I try the latest diet craze?", StartTime = 22.05f, EndTime = 24.37f, AudioUrl = null, Position = 5 , CreatedBy =adminId},
-                    new DictationSentence { Id = Guid.NewGuid(), LessonId = lessonId, Text = "Or will email make me a millionaire?", StartTime = 24.37f, EndTime = 26.94f, AudioUrl = null, Position = 6, CreatedBy =adminId }
-                    // ... bổ sung các câu khác nếu muốn
-                };
-                await dbContext.DictationSentences.AddRangeAsync(dictationSentences);
-                await dbContext.SaveChangesAsync();
+                    var dictationSentences = new List<DictationSentence>
+                    {
+                        new DictationSentence { LessonId = dictationLesson.Id, Text = "I wake up at 6 a.m. every day.", StartTime = 0f, EndTime = 2.5f, Position = 1, CreatedBy = adminId },
+                        new DictationSentence { LessonId = dictationLesson.Id, Text = "Then I brush my teeth and have breakfast.", StartTime = 2.5f, EndTime = 5.0f, Position = 2, CreatedBy = adminId }
+                    };
+                    await dbContext.DictationSentences.AddRangeAsync(dictationSentences);
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
         private IEnumerable<Lesson> GetLessonsAsync()

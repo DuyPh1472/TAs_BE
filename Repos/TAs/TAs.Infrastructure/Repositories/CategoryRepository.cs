@@ -18,8 +18,8 @@ namespace TAs.Infrastructure.Repositories
         public async Task<List<Category>> GetCategoriesBySkillName(string skillName)
         {
             return await context.Categories
-                         .Where(s => s.Skill.Name == skillName)
-                         .ToListAsync();
+                        .Where(c => c.Skill.Name.ToLower() == skillName.ToLower())
+                        .ToListAsync();
         }
 
         public async Task<GetCategoryIdDTO?> GetCategoryByIdAsync(Guid categoryId)
