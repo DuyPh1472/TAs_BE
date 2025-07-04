@@ -45,20 +45,6 @@ namespace TAs.Infrastructure.UOW
                 return _categoryRepository;
             }
         }
-
-        public ICategoryLessonRepository _categoryLessonRepository = null!;
-        public ICategoryLessonRepository CategoryLessonRepository
-        {
-            get
-            {
-                if (_categoryLessonRepository is null)
-                {
-                    _categoryLessonRepository = new CategoryLessonRepository(context);
-                }
-                return _categoryLessonRepository;
-            }
-        }
-
         public ILessonRepository _lessonRepository = null!;
         public ILessonRepository LessonRepository
         {
@@ -81,19 +67,6 @@ namespace TAs.Infrastructure.UOW
                     _progressRepository = new ProgressRepository(context);
                 }
                 return _progressRepository;
-            }
-        }
-
-        public ISkillLessonRepository _skillLessonRepository = null!;
-        public ISkillLessonRepository SkillLessonRepository
-        {
-            get
-            {
-                if (_skillLessonRepository is null)
-                {
-                    _skillLessonRepository = new SkillLessonRepository(context);
-                }
-                return _skillLessonRepository;
             }
         }
 

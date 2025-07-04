@@ -11,7 +11,6 @@ using TAs.Infrastructure.Persistence;
 using TAs.Infrastructure.Persistence.GenericRepo;
 using TAs.Infrastructure.Repositories;
 using TAs.Infrastructure.Seeder.Categories;
-using TAs.Infrastructure.Seeder.CategoryLessons;
 using TAs.Infrastructure.Seeder.IdentityRoles;
 using TAs.Infrastructure.Seeder.IdentityUsers;
 using TAs.Infrastructure.Seeder.IdentityUsersRoles;
@@ -33,7 +32,6 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISeeder, IdentityUserRoleSeeder>();
         services.AddScoped<ISeeder, CategorySeeder>();
         services.AddScoped<ISeeder, LessonSeeder>();
-        services.AddScoped<ISeeder, CategoryLessonSeeder>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddIdentityApiEndpoints<User>()
          .AddRoles<IdentityRole<Guid>>()
@@ -41,11 +39,9 @@ public static class ServiceCollectionExtension
          .AddEntityFrameworkStores<TAsDbContext>();
         services.AddScoped<ISkillRepository, SkillRepository>();
         services.AddScoped<IAchievementRepository, AchievementRepository>();
-        services.AddScoped<CategoryLessonRepository, CategoryLessonRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ILessonRepository, LessonRepository>();
         services.AddScoped<IProgressRepository, ProgressRepository>();
-        services.AddScoped<ISkillLessonRepository, SkillLessonRepository>();
         services.AddScoped<IUserAchievementRepository, UserAchievementRepository>();
         services.AddScoped<ILessonSeedService, LessonSeedService>();
         services.AddScoped<IUserRepository, UserRepository>();

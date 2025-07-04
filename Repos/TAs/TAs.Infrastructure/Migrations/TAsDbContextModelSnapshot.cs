@@ -193,6 +193,10 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CategoryType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -210,6 +214,9 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<float>("Duration")
                         .HasColumnType("real");
 
+                    b.Property<Guid>("SkillId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -222,40 +229,9 @@ namespace TAs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SkillId");
+
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("TAs.Domain.Entities.CategoryLesson", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("LessonId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("LessonId");
-
-                    b.ToTable("CategoryLessons");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.DictationSentence", b =>
@@ -315,6 +291,9 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<string>("AudioUrl")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -357,6 +336,8 @@ namespace TAs.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Lessons");
                 });
@@ -459,39 +440,6 @@ namespace TAs.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
-                });
-
-            modelBuilder.Entity("TAs.Domain.Entities.SkillLesson", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("LessonId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("SkillId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LessonId");
-
-                    b.HasIndex("SkillId");
-
-                    b.ToTable("SkillLessons");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.User", b =>
@@ -679,23 +627,15 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TAs.Domain.Entities.CategoryLesson", b =>
+            modelBuilder.Entity("TAs.Domain.Entities.Category", b =>
                 {
-                    b.HasOne("TAs.Domain.Entities.Category", "Category")
-                        .WithMany("CategoryLessons")
-                        .HasForeignKey("CategoryId")
+                    b.HasOne("TAs.Domain.Entities.Skill", "Skill")
+                        .WithMany("Categories")
+                        .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TAs.Domain.Entities.Lesson", "Lesson")
-                        .WithMany("CategoryLessons")
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Lesson");
+                    b.Navigation("Skill");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.DictationSentence", b =>
@@ -707,6 +647,17 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>
+                {
+                    b.HasOne("TAs.Domain.Entities.Category", "Category")
+                        .WithMany("Lessons")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Progress", b =>
@@ -726,25 +677,6 @@ namespace TAs.Infrastructure.Migrations
                     b.Navigation("Lesson");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TAs.Domain.Entities.SkillLesson", b =>
-                {
-                    b.HasOne("TAs.Domain.Entities.Lesson", "Lesson")
-                        .WithMany("SkillLessons")
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TAs.Domain.Entities.Skill", "Skill")
-                        .WithMany("SkillLessons")
-                        .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lesson");
-
-                    b.Navigation("Skill");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.UserAchievement", b =>
@@ -773,21 +705,17 @@ namespace TAs.Infrastructure.Migrations
 
             modelBuilder.Entity("TAs.Domain.Entities.Category", b =>
                 {
-                    b.Navigation("CategoryLessons");
+                    b.Navigation("Lessons");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>
                 {
-                    b.Navigation("CategoryLessons");
-
                     b.Navigation("DictationSentences");
-
-                    b.Navigation("SkillLessons");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Skill", b =>
                 {
-                    b.Navigation("SkillLessons");
+                    b.Navigation("Categories");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.User", b =>

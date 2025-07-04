@@ -20,16 +20,16 @@ public class GetCategoryIdDTO
             Difficulty = category.Difficult,
             Duration = category.Duration,
             Title = category.Title,
-            Lessons = [.. category.CategoryLessons.Select(l => new LessonDTO
+            Lessons = [.. category.Lessons.Select(l => new LessonDTO
             {
-                LessonId = l.Lesson.Id,
-                Accent = l.Lesson.Accent,
-                Description = l.Lesson.Description,
-                Duration = l.Lesson.Duration,
-                Level = l.Lesson.Level,
-                Sentences = l.Lesson.Sentences,
-                Title = l.Lesson.Title,
-                Topics = l.Lesson.Topics
+                LessonId = l.Id,
+                Accent = l.Accent,
+                Description = l.Description,
+                Duration = l.Duration,
+                Level = l.Level,
+                Sentences = l.Sentences,
+                Title = l.Title,
+                Topics = l.Topics
             })]
         };
     }

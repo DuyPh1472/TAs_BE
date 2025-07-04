@@ -112,21 +112,7 @@ namespace TAs.Infrastructure.Seeder.Lessons
                     await _dbContext.SaveChangesAsync();  // Save after adding sentences
                 }
 
-                // Handle CategoryLesson relationship
-                var catLesson = await _dbContext.CategoryLessons
-                    .FirstOrDefaultAsync(cl => cl.LessonId == lessonId && cl.CategoryId == categoryId);
-
-                if (catLesson == null)
-                {
-                    catLesson = new CategoryLesson
-                    {
-                        LessonId = lessonId,
-                        CategoryId = categoryId,
-                        CreatedBy = adminId
-                    };
-                    await _dbContext.CategoryLessons.AddAsync(catLesson);
-                    await _dbContext.SaveChangesAsync(); // Save after adding the category relation
-                }
+              
 
                 return (true, "Lesson and sentences seeded/updated successfully.");
             }

@@ -7,5 +7,7 @@ namespace TAs.Application.Interfaces.Repositories
     public interface ICategoryRepository : IGenericRepository<Category>
     {
         Task<GetCategoryIdDTO?> GetCategoryByIdAsync(Guid categoryId);
+        Task<Category?> GetCategoryByTitle(string categoryTitle);
+        Task<List<Category>> GetCategoriesBySkillName(string skillName);
     }
 }

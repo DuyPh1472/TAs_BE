@@ -7,6 +7,7 @@ namespace TAs.Application.Interfaces.Repositories
     {
         Task<IEnumerable<Skill>> GetAllSkillsAsync();
         Task<Skill?> GetSkillByIdAsync(Guid id);
+        Task<Skill?> GetSkillByNameAsync(string name);
         Task<bool> IsDuplicated(string skillName, string skillPath);
     }
 }

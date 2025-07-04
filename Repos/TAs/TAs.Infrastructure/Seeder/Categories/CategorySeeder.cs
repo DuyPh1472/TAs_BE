@@ -11,7 +11,13 @@ namespace TAs.Infrastructure.Seeder.Categories
         {
             if (!await dbContext.Categories.AnyAsync())
             {
-                var categories = GetCategories();
+                var adminId = Guid.Parse("ba02df20-a2ca-4f10-be79-8f5fc5bca1da");
+
+                var categories = new List<Category>
+                {
+                    new Category { Id = Guid.Parse("1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"), SkillId = Guid.Parse("11111111-1111-1111-1111-111111111111"), CategoryType = "IELTS", Title = "IELTS Listening", Description = "IELTS Listening practice", Difficult = "Medium", Accent = "American", Duration = 251.66f, CreatedBy =adminId},
+                    new Category { Id = Guid.Parse("2b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"), SkillId = Guid.Parse("22222222-2222-2222-2222-222222222222"), CategoryType = "IELTS", Title = "IELTS Reading", Description = "IELTS Reading practice", Difficult = "Medium", Accent = "British", Duration = 200.0f,CreatedBy =adminId }
+                };
                 await dbContext.Categories.AddRangeAsync(categories);
                 await dbContext.SaveChangesAsync();
             }

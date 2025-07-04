@@ -21,7 +21,7 @@ namespace TAs.Application.Categories.DTOs.Retrieval
                 Difficulty = category.Difficult,
                 Duration = category.Duration,
                 Title = category.Title,
-                LessonsCount = category.CategoryLessons?.Count ?? 0
+                LessonsCount = category.Lessons?.Count ?? 0
             };
         }
     }

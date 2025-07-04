@@ -9,7 +9,14 @@ namespace TAs.Infrastructure.Seeder.Skills
         {
             if (!await dbContext.Skills.AnyAsync())
             {
-                var skills = GetSkills();
+                var adminId = Guid.Parse("ba02df20-a2ca-4f10-be79-8f5fc5bca1da");
+                var skills = new List<Skill>
+                {
+                    new Skill { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), Name = "Dictation", Path = "dictation", Icon = "dictation-icon", Color = "#FF5733", Description = "Practice dictation skills" ,CreatedBy =adminId},
+                    new Skill { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), Name = "Listening", Path = "listening", Icon = "listening-icon", Color = "#33C1FF", Description = "Practice listening skills" , CreatedBy =adminId},
+                    new Skill { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), Name = "Reading", Path = "reading", Icon = "reading-icon", Color = "#33FF57", Description = "Practice reading skills" ,CreatedBy =adminId},
+                    new Skill { Id = Guid.Parse("44444444-4444-4444-4444-444444444444"), Name = "Writing", Path = "writing", Icon = "writing-icon", Color = "#FFC133", Description = "Practice writing skills", CreatedBy =adminId}
+                };
                 await dbContext.Skills.AddRangeAsync(skills);
                 await dbContext.SaveChangesAsync();
             }
@@ -27,7 +34,7 @@ namespace TAs.Infrastructure.Seeder.Skills
                     Path = "reading",
                     Icon = "BookOpen",
                     Color = "from-blue-500 to-indigo-600",
-                    Description = "Improve your reading comprehension with diverse texts",
+                    Description = "Improve your reading comprehension with diverse texts,",
                     CreatedAt = today,
                     UpdatedAt = today,
                     CreatedBy = adminId
@@ -39,7 +46,7 @@ namespace TAs.Infrastructure.Seeder.Skills
                     Path = "writing",
                     Icon = "Pencil",
                     Color = "from-green-500 to-emerald-600",
-                    Description = "Practice writing essays and improve your grammar.",
+                    Description = "Practice writing essays and improve your grammar.,",
                     CreatedAt = today,
                     UpdatedAt = today,
                     CreatedBy = adminId
@@ -51,7 +58,7 @@ namespace TAs.Infrastructure.Seeder.Skills
                     Path = "listening",
                     Icon = "Headphones",
                     Color = "from-purple-500 to-violet-600",
-                    Description = "Enhance your listening skills with various audio materials",
+                    Description = "Enhance your listening skills with various audio materials,",
                     CreatedAt = today,
                     UpdatedAt = today,
                     CreatedBy = adminId
@@ -63,7 +70,7 @@ namespace TAs.Infrastructure.Seeder.Skills
                     Path = "vocabulary",
                     Icon = "Book",
                     Color = "from-orange-500 to-red-600",
-                    Description = "Build your vocabulary with flashcards and practice exercises",
+                    Description = "Build your vocabulary with flashcards and practice exercises,",
                     CreatedAt = today,
                     UpdatedAt = today,
                     CreatedBy = adminId
@@ -75,7 +82,7 @@ namespace TAs.Infrastructure.Seeder.Skills
                     Path = "speaking",
                     Icon = "Volume2",
                     Color = "from-pink-500 to-rose-600",
-                    Description = "Improve your pronunciation and speaking fluency",
+                    Description = "Improve your pronunciation and speaking fluency,",
                     CreatedAt = today,
                     UpdatedAt = today,
                     CreatedBy = adminId
@@ -87,7 +94,7 @@ namespace TAs.Infrastructure.Seeder.Skills
                     Path = "grammar",
                     Icon = "GraduationCap",
                     Color = "from-teal-500 to-cyan-600",
-                    Description = "Master English grammar rules and structures",
+                    Description = "Master English grammar rules and structures,",
                     CreatedAt = today,
                     UpdatedAt = today,
                     CreatedBy = adminId

@@ -9,6 +9,8 @@ using TAs.Application.Categories.DTOs.Requests;
 using TAs.Application.Categories.DTOs.Retrieval;
 using TAs.Application.Categories.Queries;
 using TAs.Application.Categories.Queries.GetById;
+using TAs.Application.Categories.Queries.GetByTitles;
+using TAs.Application.Categories.Queries.GetCategoriesBySkillName;
 using TAs.Domain.Constants;
 
 namespace TAs.APi.Controllers
@@ -37,6 +39,25 @@ namespace TAs.APi.Controllers
 
         }
         [HttpGet]
+        [Route("skill/{skillName}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiResponse<IEnumerable<GetAllCategoriesDTO>>>> GetCategoriesBySkill(string skillName)
+        {
+            var categories
+             = await mediator.Send(new GetCategoryBySkillQuery(skillName));
+            if (!categories.IsSuccess)
+            {
+                var response = new
+                ApiResponse<IEnumerable<GetAllCategoriesDTO>>
+                (false, null, 404, categories.Error.Description);
+                if (categories.Error.Code == "NoSkillFound")
+                    return NotFound(response);
+            }
+            return Ok(new ApiResponse<IEnumerable<GetAllCategoriesDTO>>
+              (true, categories.Data, 200, "Categories retrieved successfully."));
+
+        }
+        [HttpGet]
         [AllowAnonymous]
         [Route("{categoryId:guid}")]
         public async Task<ActionResult<ApiResponse<GetCategoryIdDTO>>> GetById(Guid categoryId)
@@ -53,6 +74,24 @@ namespace TAs.APi.Controllers
             return Ok(
                 new ApiResponse<GetCategoryIdDTO>(
                     true, category.Data, 200, "Category retrieved successfully by ID."));
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("CategoryTitle/{title}")]
+        public async Task<ActionResult<ApiResponse<GetCategoryByTitleDTO>>> GetByCategoryTile(string title)
+        {
+            var category = await mediator
+                                  .Send(new GetCategoryByTitleQuery(title));
+            if (!category.IsSuccess)
+            {
+                var response = new
+                ApiResponse<GetCategoryByTitleDTO>(false, null, 404, category.Error.Description);
+                if (category.Error.Code == "NoCategoryFound")
+                    return NotFound(response);
+            }
+            return Ok(
+                new ApiResponse<GetCategoryByTitleDTO>(
+                    true, category.Data, 200, "Category retrieved successfully by Title."));
         }
         [HttpPut]
         [Authorize(Roles = UserRoles.Admin)]

@@ -17,7 +17,8 @@ namespace TAs.Infrastructure.Repositories
         public async Task<int> CountCompleted(Guid? progressId)
         {
             if (progressId.HasValue)
-                return await dbContext.Progresses.CountAsync(p => p.Id == progressId && p.ProgressStatus);
+                return await dbContext.Progresses
+                .CountAsync(p => p.Id == progressId && p.ProgressStatus);
             else
                 return await dbContext.Progresses.CountAsync(p => p.ProgressStatus);
         }
