@@ -3,6 +3,7 @@ using TAs.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using TAs.Infrastructure.Seeder.Lessons.Services;
 using TAs.Infrastructure.Seeder.Lessons.Request;
+using System.Text.Json; 
 
 namespace TAs.Infrastructure.Seeder.Lessons
 {
@@ -14,7 +15,7 @@ namespace TAs.Infrastructure.Seeder.Lessons
             _dbContext = dbContext;
         }
 
-        public async Task<(bool Success, string Message)> SeedLessonFromJsonAsync(string categoryTitle,LessonSeedRequest request)
+        public async Task<(bool Success, string Message)> SeedLessonFromJsonAsync(string categoryTitle, LessonSeedRequest request)
         {
             try
             {
@@ -23,7 +24,6 @@ namespace TAs.Infrastructure.Seeder.Lessons
 
                 var lessonId = request.LessonId;
 
-                // Extract lesson properties
                 var title = request.LessonName ?? string.Empty;
                 var description = request.Description ?? string.Empty;
                 var level = request.VocabLevel ?? string.Empty;
@@ -33,23 +33,18 @@ namespace TAs.Infrastructure.Seeder.Lessons
                 var youtubeUrl = request.YoutubeUrl;
                 var videoId = request.VideoId;
 
-                // Calculate duration from challenges, defaulting to 0
                 var duration = request.Challenges?.Max(ch => ch.TimeEnd) ?? 0;
 
-                // --- Sửa đổi quan trọng ở đây ---
                 var category = await _dbContext
                     .Categories.FirstOrDefaultAsync(c => c.Title == categoryTitle);
 
-                // Nếu KHÔNG tìm thấy category, thì ném exception
-                if (category == null) 
+                if (category == null)
                 {
                     return (false, $"Category with title '{categoryTitle}' not found.");
                 }
-                // --- Hết phần sửa đổi ---
 
-                // Fetch existing lesson, or create new one if not found
                 var lesson = await _dbContext.Lessons
-                    .Include(l => l.DictationSentences)  // Ensure we can clear old sentences
+                    .Include(l => l.DictationSentences)
                     .FirstOrDefaultAsync(l => l.Id == lessonId);
 
                 if (lesson == null)
@@ -70,13 +65,12 @@ namespace TAs.Infrastructure.Seeder.Lessons
                         UpdatedAt = now,
                         CreatedBy = adminId,
                         UpdatedBy = adminId,
-                        CategoryId = category.Id // Sử dụng category.Id đã tìm được
+                        CategoryId = category.Id
                     };
                     await _dbContext.Lessons.AddAsync(lesson);
                 }
                 else
                 {
-                    // Update the existing lesson
                     lesson.Title = title;
                     lesson.Description = description;
                     lesson.Level = level;
@@ -88,38 +82,63 @@ namespace TAs.Infrastructure.Seeder.Lessons
                     lesson.VideoId = videoId;
                     lesson.UpdatedAt = now;
                     lesson.UpdatedBy = adminId;
-                    lesson.CategoryId = category.Id; // Cập nhật CategoryId khi chỉnh sửa lesson
+                    lesson.CategoryId = category.Id;
                 }
 
                 await _dbContext.SaveChangesAsync();
 
-                // Remove existing dictation sentences and add new ones from the challenges
                 if (lesson.DictationSentences != null && lesson.DictationSentences.Any())
                 {
                     _dbContext.DictationSentences.RemoveRange(lesson.DictationSentences);
                     await _dbContext.SaveChangesAsync();
                 }
 
-                // Add new sentences from the request
                 if (request.Challenges != null && request.Challenges.Any())
                 {
                     var sentences = request.Challenges
-                        .Select((ch, pos) => new DictationSentence
+                        .Select((ch, pos) =>
                         {
-                            // Nếu Id của DictationSentence là Guid và bạn muốn tạo mới, hãy thêm Guid.NewGuid()
-                            // Ví dụ: Id = Guid.NewGuid(),
-                            LessonId = lessonId,
-                            Text = ch.Content,
-                            StartTime = ch.TimeStart,
-                            EndTime = ch.TimeEnd,
-                            AudioUrl = ch.AudioSrc,
-                            Position = pos + 1,
-                            CreatedBy = adminId,
-                            CreatedAt = now 
+                            // Logic xử lý JsonContent
+                            // Bạn cần quyết định cách bạn muốn kết hợp các lựa chọn thay thế
+                            // Ví dụ: lấy lựa chọn đầu tiên hoặc kết hợp chúng thành một chuỗi
+                            string processedJsonContent = string.Empty;
+                            if (ch.JsonContent != null && ch.JsonContent.Any())
+                            {
+                                var parts = new List<string>();
+                                foreach (var element in ch.JsonContent)
+                                {
+                                    if (element.ValueKind == JsonValueKind.String)
+                                    {
+                                        parts.Add(element.GetString() ?? string.Empty);
+                                    }
+                                    else if (element.ValueKind == JsonValueKind.Array)
+                                    {
+                                        // Nếu là mảng, lấy phần tử đầu tiên (hoặc xử lý logic phức tạp hơn)
+                                        var innerArray = element.EnumerateArray().ToList();
+                                        if (innerArray.Any() && innerArray[0].ValueKind == JsonValueKind.String)
+                                        {
+                                            parts.Add(innerArray[0].GetString() ?? string.Empty);
+                                        }
+                                    }
+                                }
+                                processedJsonContent = string.Join(" ", parts); // Nối các phần lại thành một chuỗi
+                            }
+
+                            return new DictationSentence
+                            {
+                                LessonId = lessonId,
+                                Text = ch.Content ?? string.Empty, // Giữ nguyên Content
+                                StartTime = ch.TimeStart.GetValueOrDefault(0),
+                                EndTime = ch.TimeEnd.GetValueOrDefault(0),
+                                AudioUrl = ch.AudioSrc,
+                                Position = pos + 1,
+                                CreatedBy = adminId,
+                                CreatedAt = now
+                            };
                         }).ToList();
 
                     await _dbContext.DictationSentences.AddRangeAsync(sentences);
-                    await _dbContext.SaveChangesAsync();
+                    await _dbContext.SaveChangesAsync(); // Sửa lại dòng này nếu DbContext là property
                 }
 
                 return (true, "Lesson and sentences seeded/updated successfully.");
