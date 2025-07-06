@@ -14,14 +14,13 @@ namespace TAs.Infrastructure.Seeder.Lessons
             _dbContext = dbContext;
         }
 
-        public async Task<(bool Success, string Message)> SeedLessonFromJsonAsync(LessonSeedRequest request)
+        public async Task<(bool Success, string Message)> SeedLessonFromJsonAsync(string categoryTitle,LessonSeedRequest request)
         {
             try
             {
                 var adminId = Guid.Parse("ba02df20-a2ca-4f10-be79-8f5fc5bca1da");
                 var now = DateTime.UtcNow;
 
-                // Parse lessonId from request
                 var lessonId = request.LessonId;
 
                 // Extract lesson properties
@@ -37,8 +36,16 @@ namespace TAs.Infrastructure.Seeder.Lessons
                 // Calculate duration from challenges, defaulting to 0
                 var duration = request.Challenges?.Max(ch => ch.TimeEnd) ?? 0;
 
-                // Parse or assign a default categoryId
-                var categoryId = Guid.TryParse(request.CategoryId, out var parsedCategoryId) ? parsedCategoryId : Guid.Parse("1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e");
+                // --- Sửa đổi quan trọng ở đây ---
+                var category = await _dbContext
+                    .Categories.FirstOrDefaultAsync(c => c.Title == categoryTitle);
+
+                // Nếu KHÔNG tìm thấy category, thì ném exception
+                if (category == null) 
+                {
+                    return (false, $"Category with title '{categoryTitle}' not found.");
+                }
+                // --- Hết phần sửa đổi ---
 
                 // Fetch existing lesson, or create new one if not found
                 var lesson = await _dbContext.Lessons
@@ -62,7 +69,8 @@ namespace TAs.Infrastructure.Seeder.Lessons
                         CreatedAt = now,
                         UpdatedAt = now,
                         CreatedBy = adminId,
-                        UpdatedBy = adminId
+                        UpdatedBy = adminId,
+                        CategoryId = category.Id // Sử dụng category.Id đã tìm được
                     };
                     await _dbContext.Lessons.AddAsync(lesson);
                 }
@@ -80,16 +88,16 @@ namespace TAs.Infrastructure.Seeder.Lessons
                     lesson.VideoId = videoId;
                     lesson.UpdatedAt = now;
                     lesson.UpdatedBy = adminId;
+                    lesson.CategoryId = category.Id; // Cập nhật CategoryId khi chỉnh sửa lesson
                 }
 
-                // Save changes for the lesson (combine into one save to improve performance)
                 await _dbContext.SaveChangesAsync();
 
                 // Remove existing dictation sentences and add new ones from the challenges
                 if (lesson.DictationSentences != null && lesson.DictationSentences.Any())
                 {
                     _dbContext.DictationSentences.RemoveRange(lesson.DictationSentences);
-                    await _dbContext.SaveChangesAsync();  // Only save once for the sentence removal
+                    await _dbContext.SaveChangesAsync();
                 }
 
                 // Add new sentences from the request
@@ -98,6 +106,8 @@ namespace TAs.Infrastructure.Seeder.Lessons
                     var sentences = request.Challenges
                         .Select((ch, pos) => new DictationSentence
                         {
+                            // Nếu Id của DictationSentence là Guid và bạn muốn tạo mới, hãy thêm Guid.NewGuid()
+                            // Ví dụ: Id = Guid.NewGuid(),
                             LessonId = lessonId,
                             Text = ch.Content,
                             StartTime = ch.TimeStart,
@@ -105,20 +115,17 @@ namespace TAs.Infrastructure.Seeder.Lessons
                             AudioUrl = ch.AudioSrc,
                             Position = pos + 1,
                             CreatedBy = adminId,
-
+                            CreatedAt = now 
                         }).ToList();
 
                     await _dbContext.DictationSentences.AddRangeAsync(sentences);
-                    await _dbContext.SaveChangesAsync();  // Save after adding sentences
+                    await _dbContext.SaveChangesAsync();
                 }
-
-              
 
                 return (true, "Lesson and sentences seeded/updated successfully.");
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging purposes
                 Console.Error.WriteLine($"Error seeding lesson: {ex.Message}");
                 Console.Error.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return (false, $"Error: {ex.Message}");

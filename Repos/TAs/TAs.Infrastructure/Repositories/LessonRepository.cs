@@ -14,6 +14,12 @@ namespace TAs.Infrastructure.Repositories
             dbContext = context;
         }
 
+        public async Task<List<Lesson>> GetLessonsByCategoryTitle(string title)
+        {
+            return await dbContext
+            .Lessons
+            .Where(l => l.Category.Title == title).ToListAsync();
+        }
 
         public async Task<Lesson?> GetLessonsById(Guid lessonId)
         {

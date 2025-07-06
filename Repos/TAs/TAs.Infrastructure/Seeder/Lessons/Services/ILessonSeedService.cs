@@ -4,6 +4,6 @@ namespace TAs.Infrastructure.Seeder.Lessons.Services
 {
     public interface ILessonSeedService
     {
-        Task<(bool Success, string Message)> SeedLessonFromJsonAsync(LessonSeedRequest json);
+        Task<(bool Success, string Message)> SeedLessonFromJsonAsync(string categoryTitle,LessonSeedRequest json);
     }
 }

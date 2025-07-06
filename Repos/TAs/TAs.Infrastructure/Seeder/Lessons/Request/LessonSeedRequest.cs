@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace TAs.Infrastructure.Seeder.Lessons.Request
@@ -8,7 +5,7 @@ namespace TAs.Infrastructure.Seeder.Lessons.Request
     public class LessonSeedRequest
     {
         [JsonPropertyName("lessonId")]
-        public Guid LessonId { get; set; }
+        public Guid LessonId { get; set; } // Giữ là Guid, yêu cầu JSON đầu vào phải là GUID hợp lệ
 
         [JsonPropertyName("lessonName")]
         public string LessonName { get; set; } = string.Empty;
@@ -46,14 +43,12 @@ namespace TAs.Infrastructure.Seeder.Lessons.Request
         [JsonPropertyName("topics")]
         public string Topics { get; set; } = string.Empty;
 
-        [JsonPropertyName("categoryId")]
-        public string CategoryId { get; set; } = string.Empty;
     }
 
     public class ChallengeDto
     {
         [JsonPropertyName("id")]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } // Giữ là Guid, yêu cầu JSON đầu vào phải là GUID hợp lệ
 
         [JsonPropertyName("position")]
         public int Position { get; set; }
@@ -65,7 +60,9 @@ namespace TAs.Infrastructure.Seeder.Lessons.Request
         public string DefaultInput { get; set; } = string.Empty;
 
         [JsonPropertyName("jsonContent")]
-        public List<JsonElement> JsonContent { get; set; } = new List<JsonElement>();
+        // **THAY ĐỔI TẠI ĐÂY:** Nếu jsonContent luôn là mảng các chuỗi, dùng List<string> sẽ đơn giản hơn.
+        public List<string> JsonContent { get; set; } = new List<string>();
+        // Nếu nó có thể chứa các loại JSON khác (số, đối tượng, boolean), bạn cần giữ JsonElement và xử lý thủ công.
 
         [JsonPropertyName("solution")]
         public List<List<string>> Solution { get; set; } = new List<List<string>>();
