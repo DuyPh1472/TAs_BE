@@ -96,6 +96,47 @@ namespace TAs.Infrastructure.UOW
             }
         }
 
+        public IGameRoomRepository _gameRoomRepository = null!;
+        public IGameRoomRepository GameRoomRepository
+        {
+            get
+            {
+                if (_gameRoomRepository is null)
+                {
+                    _gameRoomRepository = new GameRoomRepository(context);
+                }
+                return _gameRoomRepository;
+            }
+        }
+
+
+        public IPlayerInRoomRepository _playerInRoomRepository = null!;
+        public IPlayerInRoomRepository PlayerInRoomRepository
+        {
+            get
+            {
+                if (_playerInRoomRepository is null)
+                {
+                    _playerInRoomRepository = new PlayerInRoomRepository(context);
+                }
+                return _playerInRoomRepository;
+            }
+        }
+
+
+        public IPlayerScoreRepository _playerScoreRepository = null!;
+        public IPlayerScoreRepository PlayerScoreRepository
+        {
+            get
+            {
+                if (_playerInRoomRepository is null)
+                {
+                    _playerScoreRepository = new PlayerScoreRepository(context);
+                }
+                return _playerScoreRepository;
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);

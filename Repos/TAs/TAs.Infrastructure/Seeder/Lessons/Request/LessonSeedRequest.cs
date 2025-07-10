@@ -8,7 +8,7 @@ namespace TAs.Infrastructure.Seeder.Lessons.Request
         // Guid thường không nullable trong trường hợp này vì LessonId là định danh
         // Tuy nhiên, nếu bạn muốn nó có thể null từ JSON, bạn có thể thêm "?"
         [JsonPropertyName("lessonId")]
-        public Guid LessonId { get; set; }
+        public Guid? LessonId { get; set; }
 
         [JsonPropertyName("lessonName")]
         public string? LessonName { get; set; } = string.Empty; // Đã là nullable và mặc định

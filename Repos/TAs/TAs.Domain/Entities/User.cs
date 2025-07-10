@@ -10,12 +10,15 @@ namespace TAs.Domain.Entities
         public string FullName { get; set; } = string.Empty;
         public float TargetScore { get; set; }
         public int TotalStudyTime { get; set; }
-        public UserLevelEnum Level { get; set; } 
+        public UserLevelEnum Level { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public Guid CreatedBy { get; set; }
         public Guid UpdatedBy { get; set; }
         public ICollection<Progress> Progresses { get; set; } = [];
         public ICollection<UserAchievement> UserAchievements { get; set; } = [];
+        public ICollection<PlayerInRoom> PlayerInRooms { get; set; } = [];
+        public ICollection<PlayerScore> playerScores = [];
+        
     }
 }

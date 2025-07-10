@@ -19,7 +19,10 @@ namespace TAs.Infrastructure.Persistence
         internal DbSet<Progress> Progresses { get; set; }
         internal DbSet<UserAchievement> UserAchievements { get; set; }
         internal DbSet<DictationSentence> DictationSentences { get; set; }
-     
+        internal DbSet<PlayerScore> PlayerScores { get; set; }
+        internal DbSet<PlayerInRoom> PlayerInRooms { get; set; }
+        internal DbSet<GameRoom> GameRooms { get; set; }
+
     }
 
 }

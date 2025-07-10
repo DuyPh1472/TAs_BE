@@ -11,6 +11,10 @@ namespace TAs.Application.Interfaces
         IProgressRepository ProgressRepository { get; }
         IUserRepository UserRepository { get; }
         IUserAchievementRepository UserAchievementRepository { get; }
+        IGameRoomRepository GameRoomRepository { get; }
+        IPlayerInRoomRepository PlayerInRoomRepository { get; }
+        IPlayerScoreRepository PlayerScoreRepository { get; }
+
         Task SaveChangesAsync();
     }
 

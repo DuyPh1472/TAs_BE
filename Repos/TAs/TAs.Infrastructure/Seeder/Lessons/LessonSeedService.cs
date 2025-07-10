@@ -51,7 +51,7 @@ namespace TAs.Infrastructure.Seeder.Lessons
                 {
                     lesson = new Lesson
                     {
-                        Id = lessonId,
+                        Id = lessonId ?? Guid.NewGuid(),
                         Title = title,
                         Description = description,
                         Level = level,
@@ -126,7 +126,7 @@ namespace TAs.Infrastructure.Seeder.Lessons
 
                             return new DictationSentence
                             {
-                                LessonId = lessonId,
+                                LessonId = lessonId ?? Guid.NewGuid(),
                                 Text = ch.Content ?? string.Empty, // Giữ nguyên Content
                                 StartTime = ch.TimeStart.GetValueOrDefault(0),
                                 EndTime = ch.TimeEnd.GetValueOrDefault(0),

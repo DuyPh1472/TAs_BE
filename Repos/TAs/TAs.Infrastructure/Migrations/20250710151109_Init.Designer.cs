@@ -12,7 +12,7 @@ using TAs.Infrastructure.Persistence;
 namespace TAs.Infrastructure.Migrations
 {
     [DbContext(typeof(TAsDbContext))]
-    [Migration("20250703174219_Init")]
+    [Migration("20250710151109_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -281,6 +281,44 @@ namespace TAs.Infrastructure.Migrations
                     b.ToTable("DictationSentences");
                 });
 
+            modelBuilder.Entity("TAs.Domain.Entities.GameRoom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("HostId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("RoomName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HostId");
+
+                    b.ToTable("GameRooms");
+                });
+
             modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>
                 {
                     b.Property<Guid>("Id")
@@ -343,6 +381,81 @@ namespace TAs.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Lessons");
+                });
+
+            modelBuilder.Entity("TAs.Domain.Entities.PlayerInRoom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsHost")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PlayerInRooms");
+                });
+
+            modelBuilder.Entity("TAs.Domain.Entities.PlayerScore", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PlayerScores");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Progress", b =>
@@ -652,6 +765,17 @@ namespace TAs.Infrastructure.Migrations
                     b.Navigation("Lesson");
                 });
 
+            modelBuilder.Entity("TAs.Domain.Entities.GameRoom", b =>
+                {
+                    b.HasOne("TAs.Domain.Entities.User", "Host")
+                        .WithMany()
+                        .HasForeignKey("HostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Host");
+                });
+
             modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>
                 {
                     b.HasOne("TAs.Domain.Entities.Category", "Category")
@@ -661,6 +785,44 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("TAs.Domain.Entities.PlayerInRoom", b =>
+                {
+                    b.HasOne("TAs.Domain.Entities.GameRoom", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TAs.Domain.Entities.User", "User")
+                        .WithMany("PlayerInRooms")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TAs.Domain.Entities.PlayerScore", b =>
+                {
+                    b.HasOne("TAs.Domain.Entities.GameRoom", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TAs.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Progress", b =>
@@ -723,6 +885,8 @@ namespace TAs.Infrastructure.Migrations
 
             modelBuilder.Entity("TAs.Domain.Entities.User", b =>
                 {
+                    b.Navigation("PlayerInRooms");
+
                     b.Navigation("Progresses");
 
                     b.Navigation("UserAchievements");

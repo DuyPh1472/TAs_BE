@@ -45,6 +45,9 @@ public static class ServiceCollectionExtension
         services.AddScoped<IUserAchievementRepository, UserAchievementRepository>();
         services.AddScoped<ILessonSeedService, LessonSeedService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IGameRoomRepository, GameRoomRepository>();
+        services.AddScoped<IPlayerInRoomRepository, PlayerInRoomRepository>();
+        services.AddScoped<IPlayerScoreRepository, PlayerScoreRepository>();
         services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
     }
 }

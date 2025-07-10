@@ -17,12 +17,12 @@ namespace TAs.Infrastructure.Seeder.Categories
                 Guid GetSkillId(string name) => skills.First(s => s.Name == name).Id;
                 var categories = new List<Category>
                 {
-                    new Category { Title = "Short Stories", Description = "A collection of audio articles introducing culture, people, places, historical events and daily life in English-speaking countries.", Difficult = "Intermediate", Accent = "North American", Duration = 7.5f, CreatedBy = adminId, SkillId = GetSkillId("Reading") },
-                    new Category { Title = "IELTS Writing", Description = "Practice IELTS writing tasks.", Difficult = "Advanced", Accent = "British", Duration = 8.0f, CreatedBy = adminId, SkillId = GetSkillId("Writing") },
-                    new Category { Title = "IELTS Listening", Description = "IELTS Listening practice", Difficult = "Medium", Accent = "American", Duration = 9.0f, CreatedBy = adminId, SkillId = GetSkillId("Listening") },
-                    new Category { Title = "Academic Vocabulary", Description = "Expand your academic vocabulary.", Difficult = "Intermediate", Accent = "International", Duration = 6.0f, CreatedBy = adminId, SkillId = GetSkillId("Vocabulary") },
-                    new Category { Title = "Daily Speaking", Description = "Practice daily English speaking.", Difficult = "Beginner", Accent = "American", Duration = 5.0f, CreatedBy = adminId, SkillId = GetSkillId("Speaking") },
-                    new Category { Title = "Grammar Basics", Description = "Master English grammar basics.", Difficult = "Beginner", Accent = "International", Duration = 4.0f, CreatedBy = adminId, SkillId = GetSkillId("Grammar") },
+                    new Category { Title = "Short Stories", Description = "A collection of audio articles introducing culture, people, places, historical events and daily life in English-speaking countries.", Difficult = "Intermediate", Accent = "North American", Duration = 7.5f, CreatedBy = adminId, SkillId = GetSkillId("Dictation") },
+                    new Category { Title = "IELTS Writing", Description = "Practice IELTS writing tasks.", Difficult = "Advanced", Accent = "British", Duration = 8.0f, CreatedBy = adminId, SkillId = GetSkillId("Dictation") },
+                    new Category { Title = "IELTS Listening", Description = "IELTS Listening practice", Difficult = "Medium", Accent = "American", Duration = 9.0f, CreatedBy = adminId, SkillId = GetSkillId("Dictation") },
+                    new Category { Title = "Academic Vocabulary", Description = "Expand your academic vocabulary.", Difficult = "Intermediate", Accent = "International", Duration = 6.0f, CreatedBy = adminId, SkillId = GetSkillId("Dictation") },
+                    new Category { Title = "Daily Speaking", Description = "Practice daily English speaking.", Difficult = "Beginner", Accent = "American", Duration = 5.0f, CreatedBy = adminId, SkillId = GetSkillId("Dictation") },
+                    new Category { Title = "Grammar Basics", Description = "Master English grammar basics.", Difficult = "Beginner", Accent = "International", Duration = 4.0f, CreatedBy = adminId, SkillId = GetSkillId("Dictation") },
                     new Category { Title = "Dictation Practice", Description = "Dictation practice for all levels.", Difficult = "Intermediate", Accent = "American", Duration = 10.0f, CreatedBy = adminId, SkillId = GetSkillId("Dictation") }
                 };
                 await dbContext.Categories.AddRangeAsync(categories);
