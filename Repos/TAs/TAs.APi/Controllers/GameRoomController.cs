@@ -7,6 +7,7 @@ using TAs.Application.GameRooms.Commands.JoinRoom;
 using TAs.Application.GameRooms.Commands.LeaveRoom;
 using TAs.Application.GameRooms.Queries.GetGameRoomsByRoomId;
 using TAs.Application.GameRooms.DTOs.Queries;
+using TAs.Application.GameRooms.DTOs.Commands;
 
 namespace TAs.APi.Controllers
 {
@@ -52,6 +53,15 @@ namespace TAs.APi.Controllers
                 return BadRequest(new ApiResponse<GetRoomDetailsDTO>(false, default, 400, result.Error.Description));
             
             return Ok(new ApiResponse<GetRoomDetailsDTO>(true, result.Data, 200, "Room retrieved successfully."));
+        }
+
+        [HttpPatch("{roomId}/ready")]
+        public async Task<ActionResult<ApiResponse<UpdateStatusRoomDTO>>> ToggleReady(Guid roomId)
+        {
+            var result = await mediator.Send(new TAs.Application.GameRooms.Commands.Update.CheckStatusGameRoomCommand(roomId));
+            if (!result.IsSuccess)
+                return BadRequest(new ApiResponse<UpdateStatusRoomDTO>(false, default, 400, result.Error.Description));
+            return Ok(new ApiResponse<UpdateStatusRoomDTO>(true, result.Data, 200, "Toggled ready status successfully."));
         }
     }
 }

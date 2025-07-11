@@ -9,6 +9,12 @@ namespace TAs.Infrastructure.Repositories
     public class PlayerInRoomRepository(TAsDbContext dbContext)
     : GenericRepository<PlayerInRoom>(dbContext), IPlayerInRoomRepository
     {
+        public async Task<bool> AllPlayerReady(Guid roomId)
+        {
+            return await _context.PlayerInRooms.Where(pl => pl.RoomId == roomId)
+            .AllAsync(pl => pl.IsReady);
+        }
+
         public async Task<bool> CheckPlayerIsHost(Guid userId)
         {
             return await _context.PlayerInRooms
