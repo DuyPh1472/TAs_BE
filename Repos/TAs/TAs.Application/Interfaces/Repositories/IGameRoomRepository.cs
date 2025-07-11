@@ -5,5 +5,6 @@ namespace TAs.Application.Interfaces.Repositories
 {
     public interface IGameRoomRepository : IGenericRepository<GameRoom>
     {
+        Task<GameRoom?> GetGameRoomByRoomId(Guid? roomId);
     }
 }

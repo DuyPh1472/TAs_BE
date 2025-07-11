@@ -12,7 +12,7 @@ using TAs.Infrastructure.Persistence;
 namespace TAs.Infrastructure.Migrations
 {
     [DbContext(typeof(TAsDbContext))]
-    [Migration("20250711015413_Init")]
+    [Migration("20250711044951_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -862,7 +862,7 @@ namespace TAs.Infrastructure.Migrations
             modelBuilder.Entity("TAs.Domain.Entities.PlayerInRoom", b =>
                 {
                     b.HasOne("TAs.Domain.Entities.GameRoom", "Room")
-                        .WithMany()
+                        .WithMany("PlayerInRooms")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -881,7 +881,7 @@ namespace TAs.Infrastructure.Migrations
             modelBuilder.Entity("TAs.Domain.Entities.PlayerScore", b =>
                 {
                     b.HasOne("TAs.Domain.Entities.GameRoom", "Room")
-                        .WithMany()
+                        .WithMany("PlayerScores")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -943,6 +943,13 @@ namespace TAs.Infrastructure.Migrations
             modelBuilder.Entity("TAs.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Lessons");
+                });
+
+            modelBuilder.Entity("TAs.Domain.Entities.GameRoom", b =>
+                {
+                    b.Navigation("PlayerInRooms");
+
+                    b.Navigation("PlayerScores");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>

@@ -23,7 +23,7 @@ namespace TAs.Domain.Entities
         [ForeignKey(nameof(SelectedLessonId))]
         public Lesson? SelectedLesson { get; set; }
         
-        public ICollection<PlayerInRoom> PlayerInRooms = [];
-        public ICollection<PlayerScore> PlayerScores = [];
+        public ICollection<PlayerInRoom> PlayerInRooms { get; set; } = [];
+        public ICollection<PlayerScore> PlayerScores { get; set; } = [];
     }
 }

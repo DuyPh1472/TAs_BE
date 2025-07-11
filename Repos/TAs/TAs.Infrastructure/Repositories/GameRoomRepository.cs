@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TAs.Application.Interfaces.Repositories;
 using TAs.Domain.Entities;
 using TAs.Infrastructure.Persistence;
@@ -13,5 +14,17 @@ namespace TAs.Infrastructure.Repositories
             context = dbContext;
         }
 
+        public async Task<GameRoom?> GetGameRoomByRoomId(Guid? roomId)
+        {
+            return await context
+            .GameRooms
+            .AsNoTracking()
+            .Include(gr => gr.Category)
+            .Include(gr => gr.Host)
+            .Include(gr => gr.PlayerInRooms)
+                .ThenInclude(pir => pir.User)
+            .Include(gr => gr.SelectedLesson)
+            .FirstOrDefaultAsync(gr => gr.Id == roomId);
+        }
     }
 }
