@@ -8,6 +8,9 @@ using TAs.Application.GameRooms.Commands.LeaveRoom;
 using TAs.Application.GameRooms.Queries.GetGameRoomsByRoomId;
 using TAs.Application.GameRooms.DTOs.Queries;
 using TAs.Application.GameRooms.DTOs.Commands;
+using TAs.Application.GameRooms.Commands.Update.SelectLesson;
+using TAs.Application.GameRooms.Commands.Update.CheckStatus;
+using TAs.Application.GameRooms.Commands.Update.StartGame;
 
 namespace TAs.APi.Controllers
 {
@@ -58,10 +61,28 @@ namespace TAs.APi.Controllers
         [HttpPatch("{roomId}/ready")]
         public async Task<ActionResult<ApiResponse<UpdateStatusRoomDTO>>> ToggleReady(Guid roomId)
         {
-            var result = await mediator.Send(new TAs.Application.GameRooms.Commands.Update.CheckStatusGameRoomCommand(roomId));
+            var result = await mediator.Send(new CheckStatusGameRoomCommand(roomId));
             if (!result.IsSuccess)
                 return BadRequest(new ApiResponse<UpdateStatusRoomDTO>(false, default, 400, result.Error.Description));
             return Ok(new ApiResponse<UpdateStatusRoomDTO>(true, result.Data, 200, "Toggled ready status successfully."));
+        }
+
+        [HttpPost("{roomId}/start")]
+        public async Task<ActionResult<ApiResponse<StartGameRoomDTO>>> StartGame(Guid roomId)
+        {
+            var result = await mediator.Send(new StartGameRoomCommand(roomId));
+            if (!result.IsSuccess)
+                return BadRequest(new ApiResponse<StartGameRoomDTO>(false, default, 400, result.Error.Description));
+            return Ok(new ApiResponse<StartGameRoomDTO>(true, result.Data, 200, "Game started successfully."));
+        }
+
+        [HttpPatch("{roomId}/select-lesson")]
+        public async Task<ActionResult<ApiResponse<bool>>> SelectLesson(Guid roomId, [FromBody] SelectLessonRequest request)
+        {
+            var result = await mediator.Send(new SelectLessonCommand(roomId, request.LessonId));
+            if (!result.IsSuccess)
+                return BadRequest(new ApiResponse<bool>(false, false, 400, result.Error.Description));
+            return Ok(new ApiResponse<bool>(true, true, 200, "Lesson selected successfully."));
         }
     }
 }

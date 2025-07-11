@@ -6,7 +6,7 @@ using TAs.Application.Users;
 using TAs.Application.Users.HandlerErrors;
 using TAs.Domain.Result;
 
-namespace TAs.Application.GameRooms.Commands.Update
+namespace TAs.Application.GameRooms.Commands.Update.CheckStatus
 {
     public class CheckStatusGameRoomCommandHandler(IUnitOfWork unitOfWork,
     IUserContext userContext) :

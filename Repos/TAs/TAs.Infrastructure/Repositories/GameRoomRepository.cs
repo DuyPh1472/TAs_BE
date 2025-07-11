@@ -18,7 +18,6 @@ namespace TAs.Infrastructure.Repositories
         {
             return await context
             .GameRooms
-            .AsNoTracking()
             .Include(gr => gr.Category)
             .Include(gr => gr.Host)
             .Include(gr => gr.PlayerInRooms)
