@@ -26,5 +26,11 @@ namespace TAs.Infrastructure.Repositories
             .Include(gr => gr.SelectedLesson)
             .FirstOrDefaultAsync(gr => gr.Id == roomId);
         }
+
+        public async Task<GameRoom?> GetGameRoomByUserId(Guid UserId)
+        {
+            return await context
+            .GameRooms.FirstOrDefaultAsync(gr => gr.HostId == UserId);
+        }
     }
 }
