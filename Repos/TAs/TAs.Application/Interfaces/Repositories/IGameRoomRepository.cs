@@ -5,6 +5,5 @@ namespace TAs.Application.Interfaces.Repositories
 {
     public interface IGameRoomRepository : IGenericRepository<GameRoom>
     {
-        
     }
 }
