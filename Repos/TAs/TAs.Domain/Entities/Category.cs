@@ -11,8 +11,11 @@ namespace TAs.Domain.Entities
         public string Difficult { get; set; } = string.Empty;
         public string Accent { get; set; } = string.Empty;
         public float Duration { get; set; }
+        
         [ForeignKey(nameof(SkillId))]
         public Skill Skill { get; set; } = null!;
+        
         public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
+        public ICollection<GameRoom> GameRooms = []; 
     }
 }

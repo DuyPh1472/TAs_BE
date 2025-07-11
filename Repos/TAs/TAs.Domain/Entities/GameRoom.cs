@@ -9,10 +9,21 @@ namespace TAs.Domain.Entities
         public required string RoomName { get; set; }
         public bool IsActive { get; set; } = true;
         public GameStatus Status { get; set; } = GameStatus.Waiting;
+        public int MaxPlayers { get; set; } = 4;
+        public Guid? SelectedLessonId { get; set; }
+        public int CurrentSentence { get; set; } = 0;
+        public Guid CategoryId { get; set; }
+        
         [ForeignKey(nameof(HostId))]
         public User Host { get; set; } = null!;
-        public ICollection<PlayerInRoom> PlayerInRooms = [];
-        public ICollection<PlayerScore> playerScores = [];
         
+        [ForeignKey(nameof(CategoryId))]
+        public Category Category { get; set; } = null!;
+        
+        [ForeignKey(nameof(SelectedLessonId))]
+        public Lesson? SelectedLesson { get; set; }
+        
+        public ICollection<PlayerInRoom> PlayerInRooms = [];
+        public ICollection<PlayerScore> PlayerScores = [];
     }
 }

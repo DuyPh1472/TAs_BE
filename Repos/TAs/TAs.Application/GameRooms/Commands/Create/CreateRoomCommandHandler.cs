@@ -1,4 +1,5 @@
 using MediatR;
+using TAs.Application.Categories.HandleErrors;
 using TAs.Application.Interfaces;
 using TAs.Application.Users;
 using TAs.Application.Users.HandlerErrors;
@@ -17,7 +18,14 @@ namespace TAs.Application.GameRooms.Commands.Create
             var currentUser = userContext.GetCurrentUser();
             if (currentUser is null)
             {
-                return Result<Guid>.Failure(IdentityErrors.UserNotFound);
+                return Result<Guid>
+                .Failure(IdentityErrors.UserNotFound);
+            }
+            var category = await unitOfWork.CategoryRepository.GetByIdAsync(request.CategoryId);
+            if (category is null)
+            {
+                return Result<Guid>
+                .Failure(CategoryErrors.NoCategoryFound(request.CategoryId));
             }
             GameRoom room = new()
             {
@@ -26,7 +34,9 @@ namespace TAs.Application.GameRooms.Commands.Create
                 IsActive = true,
                 Status = GameStatus.Waiting,
                 CreatedAt = DateTimeOffset.UtcNow,
-                CreatedBy = currentUser!.Id
+                CreatedBy = currentUser!.Id,
+                CategoryId = category.Id,
+                MaxPlayers = request.MaxPlayers
             };
             unitOfWork.GameRoomRepository.Add(room);
             PlayerInRoom playerInRoom = new()
@@ -35,7 +45,10 @@ namespace TAs.Application.GameRooms.Commands.Create
                 UserId = room.HostId,
                 CreatedBy = room.HostId,
                 CreatedAt = DateTimeOffset.UtcNow,
-                IsHost = true
+                IsHost = true,
+                IsReady = true,
+                Status = PlayerStatus.Connected,
+                JoinedAt = DateTime.UtcNow
             };
             unitOfWork.PlayerInRoomRepository.Add(playerInRoom);
             await unitOfWork.SaveChangesAsync();

@@ -15,8 +15,11 @@ namespace TAs.Domain.Entities
         public DateTimeOffset? StartedAt { get; set; }
         public DateTimeOffset? CompletedAt { get; set; }
         public DateTimeOffset? LastUpdatedAt { get; set; }
+        
+        // Quan hệ
         [ForeignKey(nameof(UserId))]
         public User User { get; set; } = null!;
+        
         [ForeignKey(nameof(LessonId))]
         public Lesson Lesson { get; set; } = null!;
     }

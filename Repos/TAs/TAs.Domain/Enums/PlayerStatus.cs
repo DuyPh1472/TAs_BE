@@ -1,10 +1,10 @@
 namespace TAs.Domain.Enums
 {
-    public enum GameStatus
+    public enum PlayerStatus
     {
-        Waiting,
-        Starting,
+        Connected,
+        Disconnected,
         Playing,
         Finished
     }
-}
+} 

@@ -206,31 +206,6 @@ namespace TAs.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameRooms",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    HostId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoomName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GameRooms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GameRooms_AspNetUsers_HostId",
-                        column: x => x.HostId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserAchievements",
                 columns: table => new
                 {
@@ -288,67 +263,6 @@ namespace TAs.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlayerInRooms",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoomId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    IsHost = table.Column<bool>(type: "boolean", nullable: false),
-                    JoinedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayerInRooms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PlayerInRooms_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerInRooms_GameRooms_RoomId",
-                        column: x => x.RoomId,
-                        principalTable: "GameRooms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayerScores",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoomId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Score = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayerScores", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PlayerScores_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerScores_GameRooms_RoomId",
-                        column: x => x.RoomId,
-                        principalTable: "GameRooms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Lessons",
                 columns: table => new
                 {
@@ -391,6 +305,12 @@ namespace TAs.Infrastructure.Migrations
                     EndTime = table.Column<float>(type: "real", nullable: false),
                     AudioUrl = table.Column<string>(type: "text", nullable: true),
                     Position = table.Column<int>(type: "integer", nullable: false),
+                    Hint = table.Column<string>(type: "text", nullable: true),
+                    Explanation = table.Column<string>(type: "text", nullable: true),
+                    AlwaysShowExplanation = table.Column<bool>(type: "boolean", nullable: false),
+                    NbComments = table.Column<int>(type: "integer", nullable: false),
+                    JsonContent = table.Column<string>(type: "text", nullable: true),
+                    Solution = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
@@ -405,6 +325,46 @@ namespace TAs.Infrastructure.Migrations
                         principalTable: "Lessons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GameRooms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    HostId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoomName = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    MaxPlayers = table.Column<int>(type: "integer", nullable: false),
+                    SelectedLessonId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CurrentSentence = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameRooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GameRooms_AspNetUsers_HostId",
+                        column: x => x.HostId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameRooms_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameRooms_Lessons_SelectedLessonId",
+                        column: x => x.SelectedLessonId,
+                        principalTable: "Lessons",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -440,6 +400,75 @@ namespace TAs.Infrastructure.Migrations
                         name: "FK_Progresses_Lessons_LessonId",
                         column: x => x.LessonId,
                         principalTable: "Lessons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlayerInRooms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoomId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsHost = table.Column<bool>(type: "boolean", nullable: false),
+                    IsReady = table.Column<bool>(type: "boolean", nullable: false),
+                    Score = table.Column<int>(type: "integer", nullable: false),
+                    CurrentProgress = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    JoinedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerInRooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PlayerInRooms_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlayerInRooms_GameRooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "GameRooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlayerScores",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoomId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Score = table.Column<int>(type: "integer", nullable: false),
+                    TotalSentences = table.Column<int>(type: "integer", nullable: false),
+                    CorrectAnswers = table.Column<int>(type: "integer", nullable: false),
+                    AverageTimePerSentence = table.Column<float>(type: "real", nullable: false),
+                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerScores", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PlayerScores_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlayerScores_GameRooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "GameRooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -492,9 +521,19 @@ namespace TAs.Infrastructure.Migrations
                 column: "LessonId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GameRooms_CategoryId",
+                table: "GameRooms",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GameRooms_HostId",
                 table: "GameRooms",
                 column: "HostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameRooms_SelectedLessonId",
+                table: "GameRooms",
+                column: "SelectedLessonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lessons_CategoryId",
@@ -582,13 +621,13 @@ namespace TAs.Infrastructure.Migrations
                 name: "GameRooms");
 
             migrationBuilder.DropTable(
-                name: "Lessons");
-
-            migrationBuilder.DropTable(
                 name: "Achievements");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Lessons");
 
             migrationBuilder.DropTable(
                 name: "Categories");

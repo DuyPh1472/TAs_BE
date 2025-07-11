@@ -15,10 +15,13 @@ namespace TAs.Domain.Entities
         public string? YoutubeUrl { get; set; } // link youtube (nếu có)
         public string? VideoId { get; set; } // id youtube (nếu có)
         public Guid CategoryId { get; set; }
+        
+        // Quan hệ
         [ForeignKey(nameof(CategoryId))]
         public Category Category { get; set; } = null!;
+        
         public ICollection<DictationSentence> DictationSentences { get; set; } = [];
         public ICollection<Progress> Progresses = [];
-
+        public ICollection<GameRoom> GameRooms = []; // Rooms sử dụng lesson này
     }
 }

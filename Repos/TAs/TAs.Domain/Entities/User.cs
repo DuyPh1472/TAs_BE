@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using TAs.Domain.Enums;
+
 namespace TAs.Domain.Entities
 {
     public class User : IdentityUser<Guid>
@@ -15,10 +16,12 @@ namespace TAs.Domain.Entities
         public DateTime? UpdatedAt { get; set; }
         public Guid CreatedBy { get; set; }
         public Guid UpdatedBy { get; set; }
+        
+        // Quan hệ
         public ICollection<Progress> Progresses { get; set; } = [];
         public ICollection<UserAchievement> UserAchievements { get; set; } = [];
         public ICollection<PlayerInRoom> PlayerInRooms { get; set; } = [];
-        public ICollection<PlayerScore> playerScores = [];
-        
+        public ICollection<PlayerScore> PlayerScores { get; set; } = [];
+        public ICollection<GameRoom> HostedRooms { get; set; } = [];
     }
 }

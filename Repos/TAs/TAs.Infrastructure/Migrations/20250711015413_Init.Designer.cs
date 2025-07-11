@@ -12,7 +12,7 @@ using TAs.Infrastructure.Persistence;
 namespace TAs.Infrastructure.Migrations
 {
     [DbContext(typeof(TAsDbContext))]
-    [Migration("20250710151109_Init")]
+    [Migration("20250711015413_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -243,6 +243,9 @@ namespace TAs.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("AlwaysShowExplanation")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("AudioUrl")
                         .HasColumnType("text");
 
@@ -255,11 +258,26 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<float>("EndTime")
                         .HasColumnType("real");
 
+                    b.Property<string>("Explanation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Hint")
+                        .HasColumnType("text");
+
+                    b.Property<string>("JsonContent")
+                        .HasColumnType("text");
+
                     b.Property<Guid>("LessonId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("NbComments")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Position")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Solution")
+                        .HasColumnType("text");
 
                     b.Property<float>("StartTime")
                         .HasColumnType("real");
@@ -287,11 +305,17 @@ namespace TAs.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("CurrentSentence")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("HostId")
                         .HasColumnType("uuid");
@@ -299,9 +323,15 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("MaxPlayers")
+                        .HasColumnType("integer");
+
                     b.Property<string>("RoomName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("SelectedLessonId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -314,7 +344,11 @@ namespace TAs.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("HostId");
+
+                    b.HasIndex("SelectedLessonId");
 
                     b.ToTable("GameRooms");
                 });
@@ -395,7 +429,13 @@ namespace TAs.Infrastructure.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("CurrentProgress")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("IsHost")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsReady")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("JoinedAt")
@@ -403,6 +443,12 @@ namespace TAs.Infrastructure.Migrations
 
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -428,6 +474,15 @@ namespace TAs.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<float>("AverageTimePerSentence")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CorrectAnswers")
+                        .HasColumnType("integer");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -438,6 +493,9 @@ namespace TAs.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalSentences")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
@@ -767,13 +825,27 @@ namespace TAs.Infrastructure.Migrations
 
             modelBuilder.Entity("TAs.Domain.Entities.GameRoom", b =>
                 {
-                    b.HasOne("TAs.Domain.Entities.User", "Host")
+                    b.HasOne("TAs.Domain.Entities.Category", "Category")
                         .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TAs.Domain.Entities.User", "Host")
+                        .WithMany("HostedRooms")
                         .HasForeignKey("HostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TAs.Domain.Entities.Lesson", "SelectedLesson")
+                        .WithMany()
+                        .HasForeignKey("SelectedLessonId");
+
+                    b.Navigation("Category");
+
                     b.Navigation("Host");
+
+                    b.Navigation("SelectedLesson");
                 });
 
             modelBuilder.Entity("TAs.Domain.Entities.Lesson", b =>
@@ -815,7 +887,7 @@ namespace TAs.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("TAs.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("PlayerScores")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -885,7 +957,11 @@ namespace TAs.Infrastructure.Migrations
 
             modelBuilder.Entity("TAs.Domain.Entities.User", b =>
                 {
+                    b.Navigation("HostedRooms");
+
                     b.Navigation("PlayerInRooms");
+
+                    b.Navigation("PlayerScores");
 
                     b.Navigation("Progresses");
 
