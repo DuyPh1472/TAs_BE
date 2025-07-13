@@ -28,11 +28,26 @@ namespace TAs.Infrastructure.Repositories
             && pl.UserId == userId);
         }
 
+        public async Task<PlayerInRoom?> GetPlayerInRoomByUser(Guid userId)
+        {
+            return await _context.PlayerInRooms
+                .FirstOrDefaultAsync(pl => pl.UserId == userId);
+        }
+
         public async Task<List<PlayerInRoom>> GetPlayerInRoomsByRoomId(Guid roomId)
         {
             return await _context.PlayerInRooms
             .Where(pl => pl.RoomId == roomId)
             .ToListAsync();
+        }
+
+        public async Task<List<PlayerInRoom>> GetPlayersByRoomIdAsync(Guid roomId)
+        {
+            return await _context.PlayerInRooms
+                .Include(pir => pir.User)
+                .Where(pl => pl.RoomId == roomId)
+                .OrderBy(pl => pl.JoinedAt)
+                .ToListAsync();
         }
     }
 }

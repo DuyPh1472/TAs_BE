@@ -23,5 +23,6 @@ namespace TAs.Domain.Entities
         public ICollection<DictationSentence> DictationSentences { get; set; } = [];
         public ICollection<Progress> Progresses = [];
         public ICollection<GameRoom> GameRooms = []; // Rooms sử dụng lesson này
+        public ICollection<GameSession> GameSessions = []; // Sessions sử dụng lesson này
     }
 }

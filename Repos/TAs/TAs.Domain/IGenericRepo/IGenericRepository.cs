@@ -7,6 +7,7 @@ namespace TAs.Domain.IGenericRepo
         void Update(T model);
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(Guid id);
+        Task<bool> ExistsAsync(Guid id);
         Task<int> SaveChangeAsync();
     }
 }

@@ -19,12 +19,12 @@ namespace TAs.Application.GameRooms.Commands.Update.CheckStatus
                 return Result<UpdateStatusRoomDTO>.Failure(IdentityErrors.UserNotFound);
             var room = await unitOfWork.GameRoomRepository.GetGameRoomByRoomId(request.RoomId);
             if (room is null)
-                return Result<UpdateStatusRoomDTO>.Failure(GameRoomErrors.NoRoomFound(request.RoomId));
+                return Result<UpdateStatusRoomDTO>.Failure(GameRoomErrors.RoomNotFound(request.RoomId));
             var player = await unitOfWork.PlayerInRoomRepository
            .GetPlayerInRoomByUserAndRoom(currentUser.Id, room.Id);
 
             if (player is null)
-                return Result<UpdateStatusRoomDTO>.Failure(GameRoomErrors.UserNotInRoom);
+                return Result<UpdateStatusRoomDTO>.Failure(GameRoomErrors.UserNotInRoom(player!.UserId, player.RoomId));
             player.IsReady = !player.IsReady;
             await unitOfWork.SaveChangesAsync();
             var allReady = await unitOfWork.PlayerInRoomRepository.AllPlayerReady(room.Id);

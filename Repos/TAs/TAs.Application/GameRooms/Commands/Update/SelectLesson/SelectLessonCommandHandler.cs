@@ -17,12 +17,12 @@ namespace TAs.Application.GameRooms.Commands.Update.SelectLesson
                 return Result<bool>.Failure(IdentityErrors.UserNotFound);
             var room = await unitOfWork.GameRoomRepository.GetGameRoomByRoomId(request.RoomId);
             if (room is null)
-                return Result<bool>.Failure(GameRoomErrors.NoRoomFound(request.RoomId));
+                return Result<bool>.Failure(GameRoomErrors.RoomNotFound(request.RoomId));
             if (room.HostId != currentUser.Id)
-                return Result<bool>.Failure(GameRoomErrors.OnlyHostCanStart);
+                return Result<bool>.Failure(GameRoomErrors.NotRoomHost());
             var lesson = await unitOfWork.LessonRepository.GetLessonsById(request.LessonId);
             if (lesson == null)
-                return Result<bool>.Failure(GameRoomErrors.LessonNotFound);
+                return Result<bool>.Failure(GameRoomErrors.LessonNotFound(request.LessonId));
             room.SelectedLessonId = lesson.Id;
             await unitOfWork.SaveChangesAsync();
             return Result<bool>.Success(true);

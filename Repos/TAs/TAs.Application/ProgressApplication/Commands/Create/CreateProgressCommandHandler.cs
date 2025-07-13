@@ -15,7 +15,7 @@ namespace TAs.Application.ProgressApplication.Commands.Create
         public async Task<Result<Guid>> Handle(CreateProgressCommand request, CancellationToken cancellationToken)
         {
             var currentUser = userContext.GetCurrentUser();
-            var lesson = await _unitOfWork.LessonRepository.GetByIdAsync(request.LessonId);
+            var lesson = await _unitOfWork.LessonRepository.GetLessonsById(request.LessonId);
             if (lesson == null)
                 return Result<Guid>.Failure(LessonError.IdNotFound(request.LessonId));
             var totalChallenge = lesson.Sentences.Split('|', StringSplitOptions.RemoveEmptyEntries).Length;

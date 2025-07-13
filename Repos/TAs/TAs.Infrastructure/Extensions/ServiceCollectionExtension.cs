@@ -17,6 +17,7 @@ using TAs.Infrastructure.Seeder.IdentityUsersRoles;
 using TAs.Infrastructure.Seeder.Lessons;
 using TAs.Infrastructure.Seeder.Lessons.Services;
 using TAs.Infrastructure.Seeder.Skills;
+using TAs.Infrastructure.Services;
 using TAs.Infrastructure.UOW;
 namespace TAs.Infrastructure.Extensions;
 
@@ -48,6 +49,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<IGameRoomRepository, GameRoomRepository>();
         services.AddScoped<IPlayerInRoomRepository, PlayerInRoomRepository>();
         services.AddScoped<IPlayerScoreRepository, PlayerScoreRepository>();
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
     }
 }

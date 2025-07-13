@@ -7,5 +7,6 @@ namespace TAs.Application.Interfaces.Repositories
     {
         Task<Lesson?> GetLessonsById(Guid lessonId);
         Task<List<Lesson>> GetLessonsByCategoryTitle(string title);
+        Task<Lesson?> GetByIdAsync(Guid? lessonId);
     }
 }

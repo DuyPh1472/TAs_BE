@@ -4,6 +4,7 @@ using TAs.Domain.Result;
 
 namespace TAs.Application.Identity.Commands
 {
-    public class RegisterCommand : RegisterDTO, IRequest<Result>;
-
+    public class RegisterCommand : RegisterDTO, IRequest<Result<AuthResultDTO>>
+    {
+    }
 }

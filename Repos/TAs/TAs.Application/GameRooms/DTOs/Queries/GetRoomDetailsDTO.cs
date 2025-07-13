@@ -20,6 +20,7 @@ namespace TAs.Application.GameRooms.DTOs.Queries
         public DateTimeOffset CreatedAt { get; set; }
         public Guid CreatedBy { get; set; }
         public List<PlayerInRoomDTO> Players { get; set; } = [];
+        public GameRoomSettingsDTO? Settings { get; set; }
     }
 
     public class PlayerInRoomDTO
@@ -34,4 +35,6 @@ namespace TAs.Application.GameRooms.DTOs.Queries
         public string Status { get; set; } = string.Empty;
         public DateTime JoinedAt { get; set; }
     }
+
+    
 } 

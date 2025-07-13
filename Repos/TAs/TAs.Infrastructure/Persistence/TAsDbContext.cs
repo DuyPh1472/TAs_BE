@@ -22,6 +22,9 @@ namespace TAs.Infrastructure.Persistence
         internal DbSet<PlayerScore> PlayerScores { get; set; }
         internal DbSet<PlayerInRoom> PlayerInRooms { get; set; }
         internal DbSet<GameRoom> GameRooms { get; set; }
+        internal DbSet<GameSession> GameSessions { get; set; }
+        internal DbSet<ChatMessage> ChatMessages { get; set; }
+        internal DbSet<RefreshToken> RefreshTokens { get; set; }
 
     }
 

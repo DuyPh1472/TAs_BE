@@ -13,6 +13,18 @@ builder.Services.AddScoped<ErrorHandlingMiddle>();
 builder.Services.AddProblemDetails();
 // Add exception handlers
 builder.Services.AddExceptionHandler<ErrorHandlingMiddle>();
+builder.Services.AddSingleton<TAs.Application.GameRooms.InMemoryGameRoomService>();
+builder.Services.AddSignalR();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173","http://localhost:5174")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 // Configure the HTTP request pipeline.
 
 var app = builder.Build();
@@ -38,13 +50,14 @@ foreach (var seeder in seeders)
 
 app.UseHttpsRedirection();
 
-// Add CORS middleware
-app.UseCors("AllowAll");
+// Sử dụng CORS cho frontend
+app.UseCors("AllowFrontend");
 
 // app.MapGroup("/api/identity/").MapIdentityApi<User>();
 
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<TAs.APi.Multiplayer.GameRoomHub>("/hubs/gameRoom");
 
 app.Run();

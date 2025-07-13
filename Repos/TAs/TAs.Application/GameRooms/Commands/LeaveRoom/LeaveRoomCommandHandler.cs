@@ -15,7 +15,7 @@ namespace TAs.Application.GameRooms.Commands.LeaveRoom
         {
             var room = await unitOfWork.GameRoomRepository.GetGameRoomByRoomId(request.RoomId);
             if (room is null)
-                return Result<Guid>.Failure(GameRoomErrors.NoRoomFound(request.RoomId));
+                return Result<Guid>.Failure(GameRoomErrors.RoomNotFound(request.RoomId));
 
             var currentUser = userContext.GetCurrentUser();
             if (currentUser is null)
@@ -24,7 +24,7 @@ namespace TAs.Application.GameRooms.Commands.LeaveRoom
             var currentPlayer = await unitOfWork.PlayerInRoomRepository
                 .GetPlayerInRoomByUserAndRoom(currentUser.Id, room.Id);
             if (currentPlayer is null)
-                return Result<Guid>.Failure(GameRoomErrors.UserNotInRoom);
+                return Result<Guid>.Failure(GameRoomErrors.UserNotInRoom(currentPlayer!.UserId, currentPlayer.RoomId));
 
             var playersInRoom = await unitOfWork.PlayerInRoomRepository
                 .GetPlayerInRoomsByRoomId(request.RoomId);

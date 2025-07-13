@@ -48,6 +48,11 @@ namespace TAs.Infrastructure.Persistence.GenericRepo
             return await _entities.FindAsync(id);
         }
 
+        public async Task<bool> ExistsAsync(Guid id)
+        {
+            return await _entities.FindAsync(id) != null;
+        }
+
         public async Task<int> SaveChangeAsync()
         {
             return await _context.SaveChangesAsync();

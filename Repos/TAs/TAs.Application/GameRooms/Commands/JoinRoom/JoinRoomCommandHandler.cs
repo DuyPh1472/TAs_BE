@@ -17,12 +17,11 @@ namespace TAs.Application.GameRooms.Commands.JoinRoom
             CurrentUser? currentUser = userContext.GetCurrentUser();
             var room = await unitOfWork.GameRoomRepository.GetByIdAsync(request.RoomId);
             if (room is null)
-                return Result<Guid>.Failure(GameRoomErrors.NoRoomFound(request.RoomId));
-            var existingPlayer = await unitOfWork
-            .PlayerInRoomRepository
-            .GetPlayerInRoomByUserAndRoom(currentUser!.Id, request.RoomId);
+                return Result<Guid>.Failure(GameRoomErrors.RoomNotFound(request.RoomId));
+            // Kiểm tra user đã ở trong phòng nào chưa (bất kỳ phòng nào)
+            var existingPlayer = await unitOfWork.PlayerInRoomRepository.GetPlayerInRoomByUser(currentUser!.Id);
             if (existingPlayer is not null)
-                return Result<Guid>.Failure(GameRoomErrors.UserAlreadyInRoom);
+                return Result<Guid>.Failure(GameRoomErrors.UserAlreadyInRoom(existingPlayer.UserId, existingPlayer.RoomId));
             PlayerInRoom playerInRoom = new()
             {
                 RoomId = room.Id,

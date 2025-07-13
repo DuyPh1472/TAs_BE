@@ -10,7 +10,10 @@ using TAs.Application.GameRooms.DTOs.Queries;
 using TAs.Application.GameRooms.DTOs.Commands;
 using TAs.Application.GameRooms.Commands.Update.SelectLesson;
 using TAs.Application.GameRooms.Commands.Update.CheckStatus;
-using TAs.Application.GameRooms.Commands.Update.StartGame;
+using TAs.Application.GameRooms.Commands.Update.UpdateRoomSettings;
+using TAs.Application.GameRooms.Commands.GameSession.StartGameSession;
+using TAs.Application.GameRooms.Queries.GetActiveRooms;
+using TAs.Application.GameRooms.Queries.GetRoomPlayers;
 
 namespace TAs.APi.Controllers
 {
@@ -67,15 +70,6 @@ namespace TAs.APi.Controllers
             return Ok(new ApiResponse<UpdateStatusRoomDTO>(true, result.Data, 200, "Toggled ready status successfully."));
         }
 
-        [HttpPost("{roomId}/start")]
-        public async Task<ActionResult<ApiResponse<StartGameRoomDTO>>> StartGame(Guid roomId)
-        {
-            var result = await mediator.Send(new StartGameRoomCommand(roomId));
-            if (!result.IsSuccess)
-                return BadRequest(new ApiResponse<StartGameRoomDTO>(false, default, 400, result.Error.Description));
-            return Ok(new ApiResponse<StartGameRoomDTO>(true, result.Data, 200, "Game started successfully."));
-        }
-
         [HttpPatch("{roomId}/select-lesson")]
         public async Task<ActionResult<ApiResponse<bool>>> SelectLesson(Guid roomId, [FromBody] SelectLessonRequest request)
         {
@@ -83,6 +77,53 @@ namespace TAs.APi.Controllers
             if (!result.IsSuccess)
                 return BadRequest(new ApiResponse<bool>(false, false, 400, result.Error.Description));
             return Ok(new ApiResponse<bool>(true, true, 200, "Lesson selected successfully."));
+        }
+
+        [HttpGet("active")]
+        public async Task<ActionResult<ApiResponse<List<GameRoomListDTO>>>> GetActiveRooms([FromQuery] string? searchTerm, [FromQuery] Guid? categoryId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        {
+            var query = new GetActiveRoomsQuery { SearchTerm = searchTerm, CategoryId = categoryId, Page = page, PageSize = pageSize };
+            var result = await mediator.Send(query);
+            if (!result.IsSuccess)
+                return BadRequest(new ApiResponse<List<GameRoomListDTO>>(false, default, 400, result.Error.Description));
+            return Ok(new ApiResponse<List<GameRoomListDTO>>(true, result.Data, 200, "Active rooms retrieved successfully."));
+        }
+
+        [HttpGet("{roomId}/players")]
+        public async Task<ActionResult<ApiResponse<List<PlayerDTO>>>> GetRoomPlayers(Guid roomId)
+        {
+            var query = new GetRoomPlayersQuery { RoomId = roomId };
+            var result = await mediator.Send(query);
+            if (!result.IsSuccess)
+                return BadRequest(new ApiResponse<List<PlayerDTO>>(false, default, 400, result.Error.Description));
+            return Ok(new ApiResponse<List<PlayerDTO>>(true, result.Data, 200, "Room players retrieved successfully."));
+        }
+
+        [HttpPut("{roomId}/settings")]
+        public async Task<ActionResult<ApiResponse<bool>>> UpdateRoomSettings(Guid roomId, [FromBody] UpdateRoomSettingsRequest request)
+        {
+            var command = new UpdateRoomSettingsCommand 
+            { 
+                RoomId = roomId,
+                TimeLimit = request.TimeLimit,
+                MaxRetries = request.MaxRetries,
+                ShowRealTimeScore = request.ShowRealTimeScore,
+   
+            };
+            var result = await mediator.Send(command);
+            if (!result.IsSuccess)
+                return BadRequest(new ApiResponse<bool>(false, false, 400, result.Error.Description));
+            return Ok(new ApiResponse<bool>(true, true, 200, "Room settings updated successfully."));
+        }
+
+        [HttpPost("{roomId}/game/start")]
+        public async Task<ActionResult<ApiResponse<GameSessionDTO>>> StartGameSession(Guid roomId, [FromBody] StartGameSessionRequest request)
+        {
+            var command = new StartGameSessionCommand { RoomId = roomId, LessonId = request.LessonId };
+            var result = await mediator.Send(command);
+            if (!result.IsSuccess)
+                return BadRequest(new ApiResponse<GameSessionDTO>(false, default, 400, result.Error.Description));
+            return Ok(new ApiResponse<GameSessionDTO>(true, result.Data, 200, "Game session started successfully."));
         }
     }
 }

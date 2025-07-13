@@ -27,5 +27,15 @@ namespace TAs.Infrastructure.Repositories
             .Include(l => l.DictationSentences)
             .FirstOrDefaultAsync(l => l.Id == lessonId);
         }
+
+        public async Task<Lesson?> GetByIdAsync(Guid? lessonId)
+        {
+            return await dbContext.Lessons
+            .Include(l => l.DictationSentences)
+            .Include(l => l.Category)
+            .FirstOrDefaultAsync(l => l.Id == lessonId);
+        }
+
+   
     }
 }

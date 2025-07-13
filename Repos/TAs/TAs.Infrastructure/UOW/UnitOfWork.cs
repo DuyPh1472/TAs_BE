@@ -129,11 +129,37 @@ namespace TAs.Infrastructure.UOW
         {
             get
             {
-                if (_playerInRoomRepository is null)
+                if (_playerScoreRepository is null)
                 {
                     _playerScoreRepository = new PlayerScoreRepository(context);
                 }
                 return _playerScoreRepository;
+            }
+        }
+
+        public IGameSessionRepository _gameSessionRepository = null!;
+        public IGameSessionRepository GameSessionRepository
+        {
+            get
+            {
+                if (_gameSessionRepository is null)
+                {
+                    _gameSessionRepository = new GameSessionRepository(context);
+                }
+                return _gameSessionRepository;
+            }
+        }
+
+        public IChatMessageRepository _chatMessageRepository = null!;
+        public IChatMessageRepository ChatMessageRepository
+        {
+            get
+            {
+                if (_chatMessageRepository is null)
+                {
+                    _chatMessageRepository = new ChatMessageRepository(context);
+                }
+                return _chatMessageRepository;
             }
         }
 

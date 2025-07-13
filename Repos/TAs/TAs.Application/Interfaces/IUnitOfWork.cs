@@ -14,6 +14,8 @@ namespace TAs.Application.Interfaces
         IGameRoomRepository GameRoomRepository { get; }
         IPlayerInRoomRepository PlayerInRoomRepository { get; }
         IPlayerScoreRepository PlayerScoreRepository { get; }
+        IGameSessionRepository GameSessionRepository { get; }
+        IChatMessageRepository ChatMessageRepository { get; }
 
         Task SaveChangesAsync();
     }

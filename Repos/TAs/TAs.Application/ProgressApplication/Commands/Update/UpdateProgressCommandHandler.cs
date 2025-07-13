@@ -19,7 +19,7 @@ namespace TAs.Application.ProgressApplication.Commands.Update
             .GetProgressByUserAndLesson(currentUser!.Id, request.LessonId);
             if (progress == null)
             {
-                var lesson = await unitOfWork.LessonRepository.GetByIdAsync(request.LessonId);
+                var lesson = await unitOfWork.LessonRepository.GetLessonsById(request.LessonId);
                 int TotalChallenge;
                 if (lesson != null)
                 {

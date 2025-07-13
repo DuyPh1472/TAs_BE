@@ -23,5 +23,6 @@ namespace TAs.Domain.Entities
         public ICollection<PlayerInRoom> PlayerInRooms { get; set; } = [];
         public ICollection<PlayerScore> PlayerScores { get; set; } = [];
         public ICollection<GameRoom> HostedRooms { get; set; } = [];
+        public ICollection<ChatMessage> ChatMessages { get; set; } = [];
     }
 }

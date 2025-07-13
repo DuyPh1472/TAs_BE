@@ -20,7 +20,7 @@ namespace TAs.Application.GameRooms.Queries.GetGameRoomsByRoomId
 
             var room = await unitOfWork.GameRoomRepository.GetGameRoomByRoomId(request.RoomId);
             if (room is null)
-                return Result<GetRoomDetailsDTO>.Failure(GameRoomErrors.NoRoomFound(request.RoomId));
+                return Result<GetRoomDetailsDTO>.Failure(GameRoomErrors.RoomNotFound(request.RoomId));
 
             var response = new GetRoomDetailsDTO
             {
@@ -31,19 +31,28 @@ namespace TAs.Application.GameRooms.Queries.GetGameRoomsByRoomId
                 CategoryDifficult = room.Category?.Difficult ?? string.Empty,
                 CategoryId = room.CategoryId.ToString(),
                 CategoryTitle = room.Category?.Title ?? string.Empty,
-                HostAvatar = room.Host?.Avatar ?? string.Empty,
+                HostAvatar = room.Host?.Avatar ?? room.Host?.FullName?.Substring(0, 2).ToUpper() ?? string.Empty,
                 HostId = room.HostId.ToString(),
                 HostName = room.Host?.UserName ?? string.Empty,
                 RoomName = room.RoomName,
                 MaxPlayers = room.MaxPlayers,
                 Status = room.Status.ToString(),
                 CurrentPlayers = room.PlayerInRooms?.Count ?? 0,
+                CurrentSentence = room.CurrentSentence,
                 SelectedLessonId = room.SelectedLessonId?.ToString(),
                 SelectedLessonTitle = room.SelectedLesson?.Title,
+                Settings = new GameRoomSettingsDTO
+                {
+                    TimeLimit = room.TimeLimit,
+                    MaxRetries = room.MaxRetries,
+                    ShowRealTimeScore = room.ShowRealTimeScore,
+                    AllowHints = room.AllowHints,
+                    LessonSelection = room.LessonSelection
+                },
                 Players = room.PlayerInRooms?.Select(pl => new PlayerInRoomDTO
                 {
                     UserId = pl.User?.Id.ToString() ?? string.Empty,
-                    Avatar = pl.User?.Avatar ?? string.Empty,
+                    Avatar = pl.User?.Avatar ?? pl.User?.FullName?.Substring(0, 2).ToUpper() ?? string.Empty,
                     UserName = pl.User?.UserName ?? string.Empty,
                     IsHost = pl.IsHost,
                     IsReady = pl.IsReady,

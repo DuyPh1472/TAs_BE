@@ -9,5 +9,7 @@ namespace TAs.Application.Interfaces.Repositories
         Task<bool> CheckPlayerIsHost(Guid userId);
         Task<List<PlayerInRoom>> GetPlayerInRoomsByRoomId(Guid roomId);
         Task<bool> AllPlayerReady(Guid roomId);
+        Task<List<PlayerInRoom>> GetPlayersByRoomIdAsync(Guid roomId);
+        Task<PlayerInRoom?> GetPlayerInRoomByUser(Guid userId);
     }
 }
