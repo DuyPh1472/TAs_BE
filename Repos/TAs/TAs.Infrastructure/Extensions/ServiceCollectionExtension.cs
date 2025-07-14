@@ -38,6 +38,16 @@ public static class ServiceCollectionExtension
          .AddRoles<IdentityRole<Guid>>()
          .AddClaimsPrincipalFactory<TAsUserClaimPrincipalFactory>()
          .AddEntityFrameworkStores<TAsDbContext>();
+        // Tắt validate password, chấp nhận mọi password
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireDigit = false;
+            options.Password.RequiredLength = 1;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequiredUniqueChars = 0;
+        });
         services.AddScoped<ISkillRepository, SkillRepository>();
         services.AddScoped<IAchievementRepository, AchievementRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
