@@ -27,6 +27,16 @@ public static class ServiceCollectionExtension
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<TAsDbContext>(options => options.UseNpgsql(connectionString));
+        // Bỏ validate password Identity
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireDigit = false;
+            options.Password.RequiredLength = 1;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequiredUniqueChars = 0;
+        });
         services.AddScoped<ISeeder, SkillSeeder>();
         services.AddScoped<ISeeder, IdentityUserSeeder>();
         services.AddScoped<ISeeder, IdentityRoleSeeder>();

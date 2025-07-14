@@ -19,8 +19,7 @@ namespace TAs.Application.Identity.Commands.Register
     {
         public async Task<Result<AuthResultDTO>> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            if (request.Password != request.ConfirmPassword)
-                return Result<AuthResultDTO>.Failure(IdentityErrors.PassWordNotMatch);
+            // Bỏ kiểm tra password == confirm password
             if (9 < request.TargetScore || request.TargetScore < 4)
                 return Result<AuthResultDTO>.Failure(IdentityErrors.InvalidScore);
             var user = new User
@@ -32,27 +31,14 @@ namespace TAs.Application.Identity.Commands.Register
                 TargetScore = request.TargetScore
             };
             var result = await _userManager.CreateAsync(user, request.Password);
-
             if (!result.Succeeded)
-                return Result<AuthResultDTO>
-                .Failure(new Error("RegisterFailed", string
-                .Join("; ", result.Errors
-                .Select(e => e.Description))));
-
-            // Gán role mặc định là "User"
-            var roleResult = await _userManager
-            .AddToRoleAsync(user, UserRoles.User);
+                return Result<AuthResultDTO>.Failure(new Error("RegisterFailed", "Không thể tạo tài khoản."));
+            var roleResult = await _userManager.AddToRoleAsync(user, UserRoles.User);
             if (!roleResult.Succeeded)
-                return Result<AuthResultDTO>
-                .Failure(new Error("AddRoleFailed", string
-                .Join("; ", roleResult.Errors
-                .Select(e => e.Description))));
-
-            // Sinh access token và refresh token
+                return Result<AuthResultDTO>.Failure(new Error("AddRoleFailed", "Không thể gán role cho tài khoản."));
             var accessToken = _jwtService.GenerateJwtToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();
             await _refreshTokenService.SaveRefreshToken(user, refreshToken);
-
             var authResult = new AuthResultDTO
             {
                 AccessToken = accessToken,
