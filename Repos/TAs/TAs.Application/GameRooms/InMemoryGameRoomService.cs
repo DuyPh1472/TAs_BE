@@ -9,79 +9,39 @@ namespace TAs.Application.GameRooms
         public IEnumerable<GameRoomState> GetAllRooms() => _rooms.Values;
         public GameRoomState? GetRoom(Guid roomId) => _rooms.TryGetValue(roomId, out var room) ? room : null;
 
-        public GameRoomState CreateRoom(Guid roomId, string roomName, int maxPlayers, Guid categoryId)
+        public GameRoomState AddRoom(GameRoomState room)
         {
-            var settings = new RoomSettings
-            {
-                MaxPlayers = maxPlayers,
-                TimeLimit = 60,
-                MaxRetries = 2,
-                ShowRealTimeScore = true,
-                AllowHints = true,
-                LessonSelection = "host_choice"
-            };
-
-            var room = new GameRoomState
-            {
-                RoomId = roomId,
-                RoomName = roomName,
-                HostId = Guid.Empty, // Sẽ được set khi host join qua SignalR
-                Settings = settings,
-                Players = new List<PlayerState>()
-            };
-            _rooms[roomId] = room;
+            _rooms[room.RoomId] = room;
             return room;
         }
 
-        public GameRoomState CreateRoom(Guid hostId, string hostName, RoomSettings settings)
+        public bool AddPlayer(Guid roomId, PlayerState player)
         {
-            var roomId = Guid.NewGuid();
-            var room = new GameRoomState
+            if (!_rooms.TryGetValue(roomId, out var room))
             {
-                RoomId = roomId,
-                HostId = hostId,
-                Settings = settings,
-                Players = new List<PlayerState>
-                {
-                    new PlayerState { 
-                        UserId = hostId, 
-                        UserName = hostName, 
-                        Avatar = hostName[0].ToString(),
-                        IsHost = true 
-                    }
-                }
-            };
-            _rooms[roomId] = room;
-            return room;
-        }
-
-        public bool JoinRoom(Guid roomId, Guid userId, string userName)
-        {
-            if (_rooms.TryGetValue(roomId, out var room))
-            {
-                if (room.Players.Count >= room.Settings.MaxPlayers) return false;
-                if (room.Players.Exists(p => p.UserId == userId)) return false;
-                
-                var player = new PlayerState { 
-                    UserId = userId, 
-                    UserName = userName,
-                    Avatar = userName[0].ToString()
-                };
-                
-                // Nếu là player đầu tiên, set làm host
-                if (room.Players.Count == 0)
-                {
-                    room.HostId = userId;
-                    player.IsHost = true;
-                }
-                
-                room.Players.Add(player);
-                return true;
+                Console.WriteLine($"Join failed: Room {roomId} not found");
+                return false;
             }
-            return false;
+            if (room.Players.Count >= room.Settings.MaxPlayers)
+            {
+                Console.WriteLine($"Join failed: Room {roomId} is full");
+                return false;
+            }
+            if (room.Players.Exists(p => p.UserId == player.UserId))
+            {
+                Console.WriteLine($"Join failed: User {player.UserId} already in room {roomId}");
+                return false;
+            }
+            if (room.Players.Count == 0)
+            {
+                room.HostId = player.UserId;
+                player.IsHost = true;
+            }
+            room.Players.Add(player);
+            return true;
         }
 
-        public void LeaveRoom(Guid roomId, Guid userId)
+        public void RemovePlayer(Guid roomId, Guid userId)
         {
             if (_rooms.TryGetValue(roomId, out var room))
             {
@@ -108,7 +68,7 @@ namespace TAs.Application.GameRooms
                     hostAvatar = hostAvatar,
                     playerCount = room.Players.Count,
                     maxPlayers = room.Settings.MaxPlayers,
-                    status = room.GameStatus,
+                    status = room.GameStatus.ToString().ToLower(),
                     categoryTitle = "Dictation",
                     categoryDescription = "Multiplayer Dictation",
                     createdAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),

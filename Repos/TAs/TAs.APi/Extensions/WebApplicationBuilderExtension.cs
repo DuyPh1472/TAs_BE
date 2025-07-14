@@ -40,6 +40,22 @@ namespace TAs.APi.Extensions
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)
             )
         };
+        // BỔ SUNG ĐOẠN NÀY CHO SIGNALR
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                // SignalR truyền token qua query string: access_token
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                // Chỉ áp dụng cho endpoint SignalR
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/gameRoom"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
             builder.Services.AddSwaggerGen(options =>
             {

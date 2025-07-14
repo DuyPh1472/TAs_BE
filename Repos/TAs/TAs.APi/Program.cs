@@ -3,6 +3,7 @@ using TAs.Application.Extensions;
 using TAs.APi.Extensions;
 using TAs.Infrastructure.Seeder.Skills;
 using TAs.APi.Middlewares;
+using TAs.APi.Multiplayer;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.AddPresentation();
@@ -54,10 +55,10 @@ app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 
 // app.MapGroup("/api/identity/").MapIdentityApi<User>();
-
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<TAs.APi.Multiplayer.GameRoomHub>("/hubs/gameRoom");
+app.MapHub<GameRoomHub>("/hubs/gameRoom");
 
 app.Run();

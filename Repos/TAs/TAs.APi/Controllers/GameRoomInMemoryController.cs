@@ -1,165 +1,83 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using TAs.Application.GameRooms;
 using MediatR;
-using TAs.Application.Categories.Queries.CheckCategoryExists;
 using TAs.APi.Multiplayer;
+using Microsoft.AspNetCore.Authorization;
+using TAs.Application.GameRooms.Queries;
+using TAs.Application.GameRooms.Commands;
 
 namespace TAs.APi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GameRoomInMemoryController(InMemoryGameRoomService roomService, IMediator mediator, IHubContext<GameRoomHub> hubContext) : ControllerBase
+    public class GameRoomInMemoryController(IMediator mediator, IHubContext<GameRoomHub> hubContext) : ControllerBase
     {
-        private readonly InMemoryGameRoomService _roomService = roomService;
         private readonly IMediator _mediator = mediator;
         private readonly IHubContext<GameRoomHub> _hubContext = hubContext;
 
         [HttpGet("active")]
-        public IActionResult GetActiveRooms()
+        public async Task<IActionResult> GetActiveRooms()
         {
-            try
+            var rooms = await _mediator.Send(new GetActiveRoomsQuery());
+            return Ok(new
             {
-                var rooms = _roomService.GetActiveRoomsDTO();
-                return Ok(new
-                {
-                    success = true,
-                    data = rooms,
-                    message = "Active rooms retrieved successfully"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
-            }
+                success = true,
+                data = rooms,
+                message = "Active rooms retrieved successfully"
+            });
         }
 
         [HttpGet("{roomId}")]
-        public IActionResult GetRoomDetails(string roomId)
+        public async Task<IActionResult> GetRoomDetails(string roomId)
         {
-            try
+            if (!Guid.TryParse(roomId, out var guid))
             {
-                if (!Guid.TryParse(roomId, out var guid))
-                {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = "Invalid room ID format"
-                    });
-                }
-
-                var roomDetails = _roomService.GetRoomDetailsDTO(guid);
-                if (roomDetails == null)
-                {
-                    return NotFound(new
-                    {
-                        success = false,
-                        message = "Room not found"
-                    });
-                }
-
-                return Ok(new
-                {
-                    success = true,
-                    data = roomDetails,
-                    message = "Room details retrieved successfully"
-                });
+                return BadRequest(new { success = false, message = "Invalid room ID format" });
             }
-            catch (Exception ex)
+            var roomDetails = await _mediator.Send(new GetRoomDetailsQuery { RoomId = guid });
+            if (roomDetails == null)
             {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
+                return NotFound(new { success = false, message = "Room not found" });
             }
+            return Ok(new
+            {
+                success = true,
+                data = roomDetails,
+                message = "Room details retrieved successfully"
+            });
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequest request)
+        [Authorize]
+        public async Task<IActionResult> CreateRoom([FromBody] CreateGameRoomCommand command)
         {
-            try
+            var roomId = await _mediator.Send(command);
+            // Lấy thông tin room vừa tạo
+            var roomDetails = await _mediator.Send(new GetRoomDetailsQuery { RoomId = roomId });
+            // Broadcast SignalR cho tất cả client
+            await _hubContext.Clients.All.SendAsync("RoomCreated", roomDetails);
+            return Ok(new
             {
-                if (!Guid.TryParse(request.CategoryId, out var categoryGuid))
-                {
-                    return BadRequest(new { success = false, message = "CategoryId must be a valid Guid" });
-                }
-
-                var categoryExists = await _mediator.Send(new CheckCategoryExistsQuery(categoryGuid));
-                if (!categoryExists)
-                {
-                    return BadRequest(new { success = false, message = "CategoryId not found" });
-                }
-
-                // Tạo room mới trong in-memory storage
-                var roomId = Guid.NewGuid();
-                var room = _roomService.CreateRoom(roomId, request.RoomName, request.MaxPlayers, categoryGuid);
-                
-                // Broadcast room created event to all clients
-                Console.WriteLine($"[GameRoomInMemoryController] Broadcasting RoomCreated event for room: {roomId}");
-                await _hubContext.Clients.All.SendAsync("RoomCreated", room);
-                Console.WriteLine($"[GameRoomInMemoryController] RoomCreated event broadcasted successfully");
-                
-                return Ok(new
-                {
-                    success = true,
-                    data = roomId.ToString(),
-                    message = "Room created successfully"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
-            }
+                success = true,
+                data = roomId.ToString(),
+                message = "Room created successfully"
+            });
         }
 
         [HttpPost("{roomId}/join")]
-        public IActionResult JoinRoom(string roomId, [FromBody] JoinRoomRequest request)
+        [Authorize]
+        public async Task<IActionResult> JoinRoom(string roomId)
         {
-            try
+            if (!Guid.TryParse(roomId, out var guid))
             {
-                if (!Guid.TryParse(roomId, out var guid))
-                {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = "Invalid room ID format"
-                    });
-                }
-
-                var room = _roomService.GetRoom(guid);
-                if (room == null)
-                {
-                    return NotFound(new
-                    {
-                        success = false,
-                        message = "Room not found"
-                    });
-                }
-
-                // Join logic sẽ được xử lý qua SignalR
-                return Ok(new
-                {
-                    success = true,
-                    message = "Join request sent successfully"
-                });
+                return BadRequest(new { success = false, message = "Invalid room ID format" });
             }
-            catch (Exception ex)
+            var result = await _mediator.Send(new JoinGameRoomCommand { RoomId = guid });
+            if (!result)
             {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
+                return BadRequest(new { success = false, message = "Join room failed" });
             }
+            return Ok(new { success = true, message = "Join request sent successfully" });
         }
     }
 

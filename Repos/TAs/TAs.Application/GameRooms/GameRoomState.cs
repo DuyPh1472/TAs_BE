@@ -1,3 +1,5 @@
+using TAs.Domain.Enums;
+
 namespace TAs.Application.GameRooms
 {
     public class GameRoomState
@@ -7,7 +9,7 @@ namespace TAs.Application.GameRooms
         public Guid HostId { get; set; }
         public List<PlayerState> Players { get; set; } = new();
         public RoomSettings Settings { get; set; } = new();
-        public string GameStatus { get; set; } = "Waiting";
+        public GameStatus GameStatus { get; set; } = GameStatus.Waiting;
     }
 
     public class RoomSettings
@@ -21,4 +23,4 @@ namespace TAs.Application.GameRooms
         public bool AllowHints { get; set; } = true;
         public string LessonSelection { get; set; } = "host_choice";
     }
-} 
+}

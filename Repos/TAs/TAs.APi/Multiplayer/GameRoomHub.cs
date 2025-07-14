@@ -1,25 +1,32 @@
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Threading.Tasks;
 using TAs.Application.GameRooms;
+using MediatR;
+using TAs.Application.GameRooms.Commands;
+using TAs.Application.Users;
+using Microsoft.AspNetCore.Authorization;
+using TAs.Application.GameRooms.Queries;
 
 namespace TAs.APi.Multiplayer
 {
-    public class GameRoomHub : Hub
+    [Authorize]
+    public class GameRoomHub(IMediator mediator, IUserContext userContext) : Hub
     {
-        private readonly InMemoryGameRoomService _roomService;
-        public GameRoomHub(InMemoryGameRoomService roomService)
-        {
-            _roomService = roomService;
-        }
+        private readonly IMediator _mediator = mediator;
+        private readonly IUserContext _userContext = userContext;
 
-        public async Task JoinRoom(Guid roomId, Guid userId, string userName)
+        public async Task JoinRoom(Guid roomId)
         {
-            var success = _roomService.JoinRoom(roomId, userId, userName);
-            if (success)
+            var currentUser = _userContext.GetCurrentUser();
+            if (currentUser == null)
+            {
+                await Clients.Caller.SendAsync("JoinFailed", "User not authenticated");
+                return;
+            }
+            var result = await _mediator.Send(new JoinGameRoomCommand { RoomId = roomId });
+            if (result)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
-                await Clients.Group(roomId.ToString()).SendAsync("PlayerJoined", userId, userName);
+                await Clients.Group(roomId.ToString()).SendAsync("PlayerJoined", currentUser.Id, currentUser.Email); // hoặc UserName nếu có
             }
             else
             {
@@ -27,73 +34,84 @@ namespace TAs.APi.Multiplayer
             }
         }
 
-        public async Task LeaveRoom(Guid roomId, Guid userId)
+        public async Task LeaveRoom(Guid roomId)
         {
-            _roomService.LeaveRoom(roomId, userId);
+            var currentUser = _userContext.GetCurrentUser();
+            if (currentUser == null)
+            {
+                await Clients.Caller.SendAsync("LeaveFailed", "User not authenticated");
+                return;
+            }
+            // TODO: Implement RemovePlayer command/handler if needed
+            // await _mediator.Send(new LeaveGameRoomCommand { RoomId = roomId });
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId.ToString());
-            await Clients.Group(roomId.ToString()).SendAsync("PlayerLeft", userId);
+            await Clients.Group(roomId.ToString()).SendAsync("PlayerLeft", currentUser.Id);
         }
 
         public async Task UpdateSettings(Guid roomId, RoomSettings settings)
         {
-            var room = _roomService.GetRoom(roomId);
-            if (room != null)
-            {
-                room.Settings = settings;
-                await Clients.Group(roomId.ToString()).SendAsync("SettingsUpdated", settings);
-            }
+            // TODO: Implement UpdateSettingsCommand/Handler if needed
+            // await _mediator.Send(new UpdateRoomSettingsCommand { RoomId = roomId, Settings = settings });
+            // Broadcast event if needed
+            await Clients.Group(roomId.ToString()).SendAsync("SettingsUpdated", settings);
         }
 
         // Game events methods
         public async Task SubmitAnswer(Guid roomId, object answerData)
         {
-            // Broadcast answer submission to all players in room
+            // TODO: Implement SubmitAnswerCommand/Handler if needed
             await Clients.Group(roomId.ToString()).SendAsync("PlayerAnswered", answerData);
         }
 
         public async Task StartGame(Guid roomId, Guid lessonId)
         {
-            var room = _roomService.GetRoom(roomId);
-            if (room != null)
-            {
-                room.Settings.LessonId = lessonId;
-                room.GameStatus = "Playing";
-                await Clients.Group(roomId.ToString()).SendAsync("GameStarted", lessonId);
-            }
+            // TODO: Implement StartGameCommand/Handler if needed
+            // await _mediator.Send(new StartGameCommand { RoomId = roomId, LessonId = lessonId });
+            await Clients.Group(roomId.ToString()).SendAsync("GameStarted", lessonId);
         }
 
         public async Task NextSentence(Guid roomId)
         {
-            // Broadcast next sentence event to all players
             await Clients.Group(roomId.ToString()).SendAsync("NextSentence");
         }
 
         public async Task EndGame(Guid roomId)
         {
-            var room = _roomService.GetRoom(roomId);
-            if (room != null)
-            {
-                room.GameStatus = "Finished";
-                await Clients.Group(roomId.ToString()).SendAsync("GameFinished");
-            }
+            // TODO: Implement EndGameCommand/Handler if needed
+            // await _mediator.Send(new EndGameCommand { RoomId = roomId });
+            await Clients.Group(roomId.ToString()).SendAsync("GameFinished");
         }
 
         // Additional events for lobby
-        public async Task CreateRoom(Guid hostId, string hostName, RoomSettings settings)
+        public async Task CreateRoom(string roomName, int maxPlayers, Guid categoryId)
         {
-            var room = _roomService.CreateRoom(hostId, hostName, settings);
+            var currentUser = _userContext.GetCurrentUser();
+            if (currentUser == null)
+            {
+                await Clients.Caller.SendAsync("CreateRoomFailed", "User not authenticated");
+                return;
+            }
+            var roomId = await _mediator.Send(new CreateGameRoomCommand
+            {
+                RoomName = roomName,
+                MaxPlayers = maxPlayers,
+                CategoryId = categoryId
+            });
+            // Lấy lại room details để broadcast
+            var room = await _mediator.Send(new GetRoomDetailsQuery { RoomId = roomId });
             await Clients.All.SendAsync("RoomCreated", room);
         }
 
         public async Task CloseRoom(Guid roomId)
         {
-            _roomService.LeaveRoom(roomId, Guid.Empty); // Remove all players
+            // TODO: Implement CloseRoomCommand/Handler if needed
+            // await _mediator.Send(new CloseRoomCommand { RoomId = roomId });
             await Clients.All.SendAsync("RoomClosed", roomId);
         }
 
         public async Task UpdateRoom(Guid roomId)
         {
-            var room = _roomService.GetRoom(roomId);
+            var room = await _mediator.Send(new GetRoomDetailsQuery { RoomId = roomId });
             if (room != null)
             {
                 await Clients.All.SendAsync("RoomUpdated", room);

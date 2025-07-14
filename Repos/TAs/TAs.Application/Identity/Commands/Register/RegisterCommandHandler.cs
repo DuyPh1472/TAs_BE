@@ -8,7 +8,7 @@ using TAs.Domain.Result;
 using TAs.Application.Interfaces;
 using TAs.Application.Identity.DTOs;
 
-namespace TAs.Application.Identity.Commands
+namespace TAs.Application.Identity.Commands.Register
 {
     public class RegisterCommandHandler(
         UserManager<User> _userManager,
