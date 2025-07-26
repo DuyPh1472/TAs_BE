@@ -26,7 +26,7 @@ namespace TAs.Infrastructure.Repositories
         public async Task<Skill?> GetSkillByNameAsync(string name)
         {
             return await dbContext.Skills
-            .FirstOrDefaultAsync(skill => skill.Name == name);
+            .FirstOrDefaultAsync(skill => skill.Name.ToLower() == name.ToLower());
         }
 
         public async Task<bool> IsDuplicated(string skillName, string skillPath)

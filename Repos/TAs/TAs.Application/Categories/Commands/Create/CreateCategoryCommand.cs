@@ -6,6 +6,6 @@ namespace TAs.Application.Categories.Commands.Create
 {
     public class CreateCategoryCommand : IRequest<Result>
     {
-        public CategoryRequest? categoryRequest { get; set; } 
+        public CategoryRequest? categoryRequest { get; set; }
     }
 }

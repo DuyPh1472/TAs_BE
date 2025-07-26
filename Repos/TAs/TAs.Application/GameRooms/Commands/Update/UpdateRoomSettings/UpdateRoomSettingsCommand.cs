@@ -9,5 +9,6 @@ namespace TAs.Application.GameRooms.Commands.Update.UpdateRoomSettings
         public int TimeLimit { get; set; }
         public int MaxRetries { get; set; }
         public bool ShowRealTimeScore { get; set; }
+        public bool AllowHints { get; set; }
     }
 }

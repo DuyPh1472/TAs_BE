@@ -4,7 +4,7 @@ using TAs.Domain.Result;
 
 namespace TAs.Application.Identity.Commands.Login
 {
-    public class LoginCommand :LoginDTO, IRequest<Result<string>>
+    public class LoginCommand :LoginDTO, IRequest<Result<AuthResultDTO>>
     {
         
     }

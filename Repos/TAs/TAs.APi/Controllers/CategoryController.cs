@@ -45,6 +45,8 @@ namespace TAs.APi.Controllers
         {
             var categories
              = await mediator.Send(new GetCategoryBySkillQuery(skillName));
+             
+             
             if (!categories.IsSuccess)
             {
                 var response = new
@@ -53,9 +55,12 @@ namespace TAs.APi.Controllers
                 if (categories.Error.Code == "NoSkillFound")
                     return NotFound(response);
             }
-            return Ok(new ApiResponse<IEnumerable<GetAllCategoriesDTO>>
-              (true, categories.Data, 200, "Categories retrieved successfully."));
-
+            
+            var result = new ApiResponse<IEnumerable<GetAllCategoriesDTO>>
+              (true, categories.Data, 200, "Categories retrieved successfully.");
+              
+            
+            return Ok(result);
         }
         [HttpGet]
         [AllowAnonymous]

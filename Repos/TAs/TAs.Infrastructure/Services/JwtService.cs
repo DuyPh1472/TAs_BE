@@ -23,8 +23,10 @@ namespace TAs.Infrastructure.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? "")
+                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+                new(ClaimTypes.Name, user.UserName ?? "")
+
             };
             // Add more claims if needed
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
@@ -48,4 +50,4 @@ namespace TAs.Infrastructure.Services
             }
         }
     }
-} 
+}

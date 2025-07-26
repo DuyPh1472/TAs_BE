@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -38,7 +39,8 @@ namespace TAs.APi.Extensions
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)
-            )
+            ),
+            NameClaimType = ClaimTypes.Name,
         };
         // BỔ SUNG ĐOẠN NÀY CHO SIGNALR
         options.Events = new JwtBearerEvents

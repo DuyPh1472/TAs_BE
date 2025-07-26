@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using TAs.Application.Interfaces;
 using TAs.Domain.Entities;
 using TAs.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace TAs.Infrastructure.Services
 {
@@ -25,6 +26,17 @@ namespace TAs.Infrastructure.Services
                 CreatedAt = System.DateTime.UtcNow
             };
             _context.RefreshTokens.Add(token);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<RefreshToken?> GetRefreshTokenAsync(string refreshToken)
+        {
+            return await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken);
+        }
+
+        public async Task MarkRefreshTokenAsUsed(RefreshToken refreshToken)
+        {
+            refreshToken.IsUsed = true;
             await _context.SaveChangesAsync();
         }
     }

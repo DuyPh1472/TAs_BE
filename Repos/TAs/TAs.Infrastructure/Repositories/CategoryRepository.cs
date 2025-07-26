@@ -18,6 +18,7 @@ namespace TAs.Infrastructure.Repositories
         public async Task<List<Category>> GetCategoriesBySkillName(string skillName)
         {
             return await context.Categories
+                        .Include(c => c.Skill)
                         .Where(c => c.Skill.Name.ToLower() == skillName.ToLower())
                         .ToListAsync();
         }

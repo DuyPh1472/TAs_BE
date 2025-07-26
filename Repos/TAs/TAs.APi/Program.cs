@@ -20,12 +20,19 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173","http://localhost:5174")
+        policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
+
 // Configure the HTTP request pipeline.
 
 var app = builder.Build();
@@ -35,7 +42,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
    {
        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TAs API v1");
-       c.RoutePrefix = string.Empty; 
+       c.RoutePrefix = string.Empty;
 
    });
 
@@ -55,7 +62,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 
 // app.MapGroup("/api/identity/").MapIdentityApi<User>();
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

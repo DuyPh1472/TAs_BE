@@ -4,7 +4,9 @@ using MediatR;
 using TAs.APi.Multiplayer;
 using Microsoft.AspNetCore.Authorization;
 using TAs.Application.GameRooms.Queries;
-using TAs.Application.GameRooms.Commands;
+using TAs.Application.GameRooms.Commands.CreateGameRoomInMemory;
+using TAs.Application.GameRooms.Commands.JoinRoomInMemory;
+using TAs.Application.GameRooms.Commands.SelectLessonInMemory;
 
 namespace TAs.APi.Controllers
 {
@@ -51,6 +53,7 @@ namespace TAs.APi.Controllers
         [Authorize]
         public async Task<IActionResult> CreateRoom([FromBody] CreateGameRoomCommand command)
         {
+            // command.CategoryId is now a Guid string from client
             var roomId = await _mediator.Send(command);
             // Lấy thông tin room vừa tạo
             var roomDetails = await _mediator.Send(new GetRoomDetailsQuery { RoomId = roomId });
@@ -73,11 +76,61 @@ namespace TAs.APi.Controllers
                 return BadRequest(new { success = false, message = "Invalid room ID format" });
             }
             var result = await _mediator.Send(new JoinGameRoomCommand { RoomId = guid });
-            if (!result)
+            if (result.Success)
             {
-                return BadRequest(new { success = false, message = "Join room failed" });
+                // Thêm user vào group SignalR
+                var userId = User?.Identity?.Name ?? result.RoomId.ToString();
+                var connectionId = HttpContext.Request.Headers["X-SignalR-ConnectionId"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(connectionId))
+                {
+                    await _hubContext.Groups.AddToGroupAsync(connectionId, roomId);
+                }
+                return Ok(new { success = true, roomId = result.RoomId, message = "Join request sent successfully" });
             }
-            return Ok(new { success = true, message = "Join request sent successfully" });
+            if (result.Message == "already in this room")
+            {
+                return Ok(new { success = false, message = result.Message, roomId = result.RoomId });
+            }
+            return BadRequest(new { success = false, message = result.Message ?? "Join room failed" });
+        }
+
+        [HttpPost("{roomId}/select-lesson")]
+        [Authorize]
+        public async Task<IActionResult> SelectLesson(string roomId, [FromBody] SelectLessonRequest request)
+        {
+            if (!Guid.TryParse(roomId, out var guid))
+            {
+                return BadRequest(new { success = false, message = "Invalid room ID format" });
+            }
+            var result = await _mediator.Send(new SelectLessonInMemoryCommand
+            {
+                RoomId = guid,
+                LessonId = request.LessonId
+            });
+            if (result.Success && result.Lesson != null)
+            {
+                // Gửi SignalR ở đây
+                await _hubContext.Clients.Group(roomId).SendAsync(
+                    "LessonSelected",
+                    result.Lesson.LessonId, 
+                    result.Lesson.Title,
+                    new {
+                        result.Lesson.LessonId,
+                        result.Lesson.Title,
+                        result.Lesson.Description,
+                        result.Lesson.Level,
+                        result.Lesson.Accent,
+                        result.Lesson.Duration
+                    }
+                );
+                return Ok(new { success = true, message = "Lesson selected successfully" });
+            }
+            return BadRequest(new { success = false, message = result.Message });
+        }
+
+        public class SelectLessonInMemoryRequest
+        {
+            public Guid LessonId { get; set; }
         }
     }
 
@@ -93,4 +146,4 @@ namespace TAs.APi.Controllers
         public string UserId { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
     }
-} 
+}

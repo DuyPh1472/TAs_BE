@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 
 namespace TAs.Application.Users
 {
@@ -19,7 +18,8 @@ namespace TAs.Application.Users
                 return null;
             var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;
-            var userName = user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+            var userName =  user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+
             var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role)!.Select(c => c.Value);
             return new CurrentUser(Guid.Parse(userId), email, userName ?? string.Empty, roles);
         }
