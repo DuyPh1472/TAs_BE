@@ -3,7 +3,7 @@ using TAs.Domain.Enums;
 
 namespace TAs.Application.GameRooms
 {
-    public class InMemoryGameRoomService
+    public class InMemoryGameRoomService : IInMemoryGameRoomService
     {
         private readonly ConcurrentDictionary<Guid, GameRoomState> _rooms = new();
 
@@ -64,9 +64,59 @@ namespace TAs.Application.GameRooms
             if (_rooms.TryGetValue(roomId, out var room))
             {
                 room.LessonId = lessonId;
+                room.Settings.LessonId = lessonId; // Đảm bảo đồng bộ với FE
                 return true;
             }
             return false;
+        }
+
+        public ReadyPlayerResult ReadyInMemory(Guid roomId, Guid userId, bool isReady)
+        {
+            if (!_rooms.TryGetValue(roomId, out var room))
+            {
+                return new ReadyPlayerResult { Success = false, Status = "RoomNotFound", Message = $"Room {roomId} not found" };
+            }
+
+            var player = room.Players.FirstOrDefault(p => p.UserId == userId);
+            if (player == null)
+            {
+                return new ReadyPlayerResult { Success = false, Status = "PlayerNotFound", Message = $"Player {userId} not found in room {roomId}" };
+            }
+
+            player.IsReady = isReady;
+            return new ReadyPlayerResult { Success = true, Status = "Success", Message = $"Player {userId} ready state set to {isReady}" };
+        }
+
+        public KickPlayerResult KickPlayerInMemory(Guid roomId, Guid hostId, Guid targetUserId)
+        {
+            if (!_rooms.TryGetValue(roomId, out var room))
+            {
+                return new KickPlayerResult { Success = false, Status = "RoomNotFound", Message = $"Room {roomId} not found" };
+            }
+
+            // Check if the user trying to kick is the host
+            if (room.HostId != hostId)
+            {
+                return new KickPlayerResult { Success = false, Status = "Unauthorized", Message = "Only the host can kick players" };
+            }
+
+            // Check if target user exists in the room
+            var targetPlayer = room.Players.FirstOrDefault(p => p.UserId == targetUserId);
+            if (targetPlayer == null)
+            {
+                return new KickPlayerResult { Success = false, Status = "PlayerNotFound", Message = $"Player {targetUserId} not found in room {roomId}" };
+            }
+
+            // Check if target user is the host (host cannot kick themselves)
+            if (targetPlayer.IsHost)
+            {
+                return new KickPlayerResult { Success = false, Status = "CannotKickHost", Message = "Host cannot kick themselves" };
+            }
+
+            // Remove the player from the room
+            room.Players.RemoveAll(p => p.UserId == targetUserId);
+            
+            return new KickPlayerResult { Success = true, Status = "Success", Message = $"Player {targetUserId} has been kicked from room {roomId}" };
         }
 
         public Guid CreateRoom(
@@ -214,6 +264,27 @@ namespace TAs.Application.GameRooms
     {
         public bool Success { get; set; }
         public string? Status { get; set; } // "Success", "AlreadyInThisRoom", "AlreadyInAnotherRoom", "RoomFull", "RoomNotFound"
+        public string? Message { get; set; }
+    }
+
+    public class ReadyPlayerResult
+    {
+        public bool Success { get; set; }
+        public string? Status { get; set; } // "Success", "RoomNotFound", "PlayerNotFound"
+        public string? Message { get; set; }
+    }
+
+    public class ReadyInMemoryResult
+    {
+        public bool Success { get; set; }
+        public string? Status { get; set; } // "Success", "RoomNotFound", "PlayerNotFound", "Unauthorized"
+        public string? Message { get; set; }
+    }
+
+    public class KickPlayerResult
+    {
+        public bool Success { get; set; }
+        public string? Status { get; set; } // "Success", "RoomNotFound", "PlayerNotFound", "Unauthorized", "CannotKickHost"
         public string? Message { get; set; }
     }
 }

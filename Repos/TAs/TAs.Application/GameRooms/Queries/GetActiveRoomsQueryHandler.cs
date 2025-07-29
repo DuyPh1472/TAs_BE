@@ -5,9 +5,9 @@ namespace TAs.Application.GameRooms.Queries
 {
     public class GetActiveRoomsQueryHandler : IRequestHandler<GetActiveRoomsQuery, IEnumerable<object>>
     {
-        private readonly InMemoryGameRoomService _roomService;
+        private readonly IInMemoryGameRoomService _roomService;
         private readonly IUnitOfWork _unitOfWork;
-        public GetActiveRoomsQueryHandler(InMemoryGameRoomService roomService, IUnitOfWork unitOfWork)
+        public GetActiveRoomsQueryHandler(IInMemoryGameRoomService roomService, IUnitOfWork unitOfWork)
         {
             _roomService = roomService;
             _unitOfWork = unitOfWork;

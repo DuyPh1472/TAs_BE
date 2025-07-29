@@ -8,12 +8,12 @@ using TAs.Application.GameRooms;
 
 namespace TAs.Application.GameRooms.Commands.Update.UpdateRoomSettings
 {
-    public class UpdateRoomSettingsCommandHandler(IUnitOfWork unitOfWork, IUserContext userContext, InMemoryGameRoomService inMemoryRoomService) 
+    public class UpdateRoomSettingsCommandHandler(IUnitOfWork unitOfWork, IUserContext userContext, IInMemoryGameRoomService inMemoryRoomService) 
         : IRequestHandler<UpdateRoomSettingsCommand, Result<bool>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IUserContext _userContext = userContext;
-        private readonly InMemoryGameRoomService _inMemoryRoomService = inMemoryRoomService;
+        private readonly IInMemoryGameRoomService _inMemoryRoomService = inMemoryRoomService;
 
         public async Task<Result<bool>> Handle(UpdateRoomSettingsCommand request, CancellationToken cancellationToken)
         {

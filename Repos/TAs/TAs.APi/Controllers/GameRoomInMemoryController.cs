@@ -7,6 +7,8 @@ using TAs.Application.GameRooms.Queries;
 using TAs.Application.GameRooms.Commands.CreateGameRoomInMemory;
 using TAs.Application.GameRooms.Commands.JoinRoomInMemory;
 using TAs.Application.GameRooms.Commands.SelectLessonInMemory;
+using TAs.Application.GameRooms.Commands.ReadyInMemory;
+using TAs.Application.GameRooms.Commands.KickPlayerInMemory;
 
 namespace TAs.APi.Controllers
 {
@@ -128,9 +130,66 @@ namespace TAs.APi.Controllers
             return BadRequest(new { success = false, message = result.Message });
         }
 
+        [HttpPost("{roomId}/ready")]
+        [Authorize]
+        public async Task<IActionResult> ReadyPlayer(string roomId, [FromBody] ReadyRequest body)
+        {
+            if (!Guid.TryParse(roomId, out var guid))
+            {
+                return BadRequest(new { success = false, message = "Invalid room ID format" });
+            }
+            
+            var result = await _mediator.Send(new ReadyInMemoryCommand { RoomId = guid, IsReady = body.IsReady });
+            
+            if (result.Success)
+            {
+                // Broadcast to all clients in the room that a player is ready
+                await _hubContext.Clients.Group(roomId).SendAsync("PlayerReady", roomId);
+                return Ok(new { success = true, message = "Player ready state updated" });
+            }
+            
+            return BadRequest(new { success = false, message = result.Message });
+        }
+
+        [HttpPost("{roomId}/kick")]
+        [Authorize]
+        public async Task<IActionResult> KickPlayer(string roomId, [FromBody] KickPlayerRequest body)
+        {
+            if (!Guid.TryParse(roomId, out var guid))
+            {
+                return BadRequest(new { success = false, message = "Invalid room ID format" });
+            }
+
+            if (!Guid.TryParse(body.TargetUserId, out var targetUserId))
+            {
+                return BadRequest(new { success = false, message = "Invalid target user ID format" });
+            }
+            
+            var result = await _mediator.Send(new KickPlayerInMemoryCommand { RoomId = guid, TargetUserId = targetUserId });
+            
+            if (result.Success)
+            {
+                // Broadcast to all clients in the room that a player has been kicked
+                await _hubContext.Clients.Group(roomId).SendAsync("PlayerKicked", roomId, body.TargetUserId);
+                return Ok(new { success = true, message = "Player kicked successfully" });
+            }
+            
+            return BadRequest(new { success = false, message = result.Message });
+        }
+
         public class SelectLessonInMemoryRequest
         {
             public Guid LessonId { get; set; }
+        }
+
+        public class ReadyRequest
+        {
+            public bool IsReady { get; set; }
+        }
+
+        public class KickPlayerRequest
+        {
+            public string TargetUserId { get; set; } = string.Empty;
         }
     }
 

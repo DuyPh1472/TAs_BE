@@ -2,9 +2,9 @@ using MediatR;
 
 namespace TAs.Application.GameRooms.Queries
 {
-    public class GetRoomDetailsQueryHandler(InMemoryGameRoomService roomService) : IRequestHandler<GetRoomDetailsQuery, object?>
+    public class GetRoomDetailsQueryHandler(IInMemoryGameRoomService roomService) : IRequestHandler<GetRoomDetailsQuery, object?>
     {
-        private readonly InMemoryGameRoomService _roomService = roomService;
+        private readonly IInMemoryGameRoomService _roomService = roomService;
 
         public Task<object?> Handle(GetRoomDetailsQuery request, CancellationToken cancellationToken)
         {

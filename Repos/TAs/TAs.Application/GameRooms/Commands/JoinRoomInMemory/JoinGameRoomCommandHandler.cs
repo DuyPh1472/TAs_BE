@@ -11,9 +11,9 @@ namespace TAs.Application.GameRooms.Commands.JoinRoomInMemory
         public Guid? RoomId { get; set; }
     }
 
-    public class JoinGameRoomCommandHandler(InMemoryGameRoomService roomService, IUserContext userContext) : IRequestHandler<JoinGameRoomCommand, JoinGameRoomResult>
+    public class JoinGameRoomCommandHandler(IInMemoryGameRoomService roomService, IUserContext userContext) : IRequestHandler<JoinGameRoomCommand, JoinGameRoomResult>
     {
-        private readonly InMemoryGameRoomService _roomService = roomService;
+        private readonly IInMemoryGameRoomService _roomService = roomService;
         private readonly IUserContext _userContext = userContext;
 
         public Task<JoinGameRoomResult> Handle(JoinGameRoomCommand request, CancellationToken cancellationToken)

@@ -14,7 +14,7 @@ builder.Services.AddScoped<ErrorHandlingMiddle>();
 builder.Services.AddProblemDetails();
 // Add exception handlers
 builder.Services.AddExceptionHandler<ErrorHandlingMiddle>();
-builder.Services.AddSingleton<TAs.Application.GameRooms.InMemoryGameRoomService>();
+
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {

@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using TAs.Application.Users;
+using TAs.Application.GameRooms;
 
 namespace TAs.Application.Extensions
 {
@@ -15,6 +16,7 @@ namespace TAs.Application.Extensions
             .AddFluentValidationAutoValidation();
             services.AddScoped<IUserContext, UserContext>();
             services.AddHttpContextAccessor();
+            services.AddSingleton<IInMemoryGameRoomService, InMemoryGameRoomService>();
         }
     }
 }

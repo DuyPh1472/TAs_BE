@@ -120,11 +120,34 @@ namespace TAs.APi.Multiplayer
             await Clients.Group(roomId.ToString()).SendAsync("PlayerAnswered", answerData);
         }
 
-        public async Task StartGame(Guid roomId, Guid lessonId)
+        public async Task StartGame(string roomId)
         {
-            // TODO: Implement StartGameCommand/Handler if needed
-            // await _mediator.Send(new StartGameCommand { RoomId = roomId, LessonId = lessonId });
-            await Clients.Group(roomId.ToString()).SendAsync("GameStarted", lessonId);
+            try
+            {
+                Console.WriteLine($"[GameRoomHub] StartGame called with roomId: {roomId}");
+                Console.WriteLine($"[GameRoomHub] Context.User: {Context.User?.Identity?.Name}");
+                Console.WriteLine($"[GameRoomHub] Context.User.IsAuthenticated: {Context.User?.Identity?.IsAuthenticated}");
+                
+                var currentUser = _userContext.GetCurrentUser();
+                Console.WriteLine($"[GameRoomHub] CurrentUser from context: {currentUser?.Id}");
+                
+                if (currentUser == null)
+                {
+                    Console.WriteLine("[GameRoomHub] User not authenticated");
+                    await Clients.Caller.SendAsync("StartGameFailed", "User not authenticated");
+                    return;
+                }
+                
+                Console.WriteLine($"[GameRoomHub] Broadcasting GameStarted to room {roomId}");
+                await Clients.Group(roomId).SendAsync("GameStarted", roomId);
+                Console.WriteLine($"[GameRoomHub] GameStarted broadcast completed");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GameRoomHub] Exception in StartGame: {ex.Message}");
+                Console.WriteLine($"[GameRoomHub] Stack trace: {ex.StackTrace}");
+                await Clients.Caller.SendAsync("StartGameFailed", "Failed to start game: " + ex.Message);
+            }
         }
 
         public async Task NextSentence(Guid roomId)

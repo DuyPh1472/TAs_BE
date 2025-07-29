@@ -4,10 +4,10 @@ using TAs.Application.Interfaces;
 
 namespace TAs.Application.GameRooms.Commands.CreateGameRoomInMemory
 {
-    public class CreateGameRoomCommandHandler(InMemoryGameRoomService roomService, IUnitOfWork unitOfWork,
+    public class CreateGameRoomCommandHandler(IInMemoryGameRoomService roomService, IUnitOfWork unitOfWork,
     IUserContext userContext) : IRequestHandler<CreateGameRoomCommand, Guid>
     {
-        private readonly InMemoryGameRoomService _roomService = roomService;
+        private readonly IInMemoryGameRoomService _roomService = roomService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IUserContext _userContext = userContext;
 

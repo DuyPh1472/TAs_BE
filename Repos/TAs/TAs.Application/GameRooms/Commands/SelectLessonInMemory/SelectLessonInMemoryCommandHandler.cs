@@ -4,9 +4,9 @@ using TAs.Application.Lessons.DTOs;
 
 namespace TAs.Application.GameRooms.Commands.SelectLessonInMemory
 {
-    public class SelectLessonInMemoryCommandHandler(InMemoryGameRoomService roomService, IUnitOfWork unitOfWork) : IRequestHandler<SelectLessonInMemoryCommand, SelectLessonInMemoryResult>
+    public class SelectLessonInMemoryCommandHandler(IInMemoryGameRoomService roomService, IUnitOfWork unitOfWork) : IRequestHandler<SelectLessonInMemoryCommand, SelectLessonInMemoryResult>
     {
-        private readonly InMemoryGameRoomService _roomService = roomService;
+        private readonly IInMemoryGameRoomService _roomService = roomService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<SelectLessonInMemoryResult> Handle(SelectLessonInMemoryCommand request, CancellationToken cancellationToken)
