@@ -15,6 +15,7 @@ namespace TAs.Application.GameRooms
         public string CategoryDescription { get; set; } = string.Empty;
         public string CategoryDifficult { get; set; } = string.Empty;
         public Guid? LessonId { get; set; }
+        public DateTime? GameStartedAt { get; set; } // Thêm field để track thời điểm bắt đầu game
     }
 
     public class RoomSettings

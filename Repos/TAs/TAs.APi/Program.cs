@@ -4,6 +4,9 @@ using TAs.APi.Extensions;
 using TAs.Infrastructure.Seeder.Skills;
 using TAs.APi.Middlewares;
 using TAs.APi.Multiplayer;
+using TAs.APi.Services;
+using TAs.Application.GameRooms;
+
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.AddPresentation();
@@ -16,6 +19,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ErrorHandlingMiddle>();
 
 builder.Services.AddSignalR();
+builder.Services.AddScoped<IGameRoomEventService, GameRoomEventService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>

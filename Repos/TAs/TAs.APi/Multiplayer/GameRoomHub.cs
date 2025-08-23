@@ -6,14 +6,18 @@ using Microsoft.AspNetCore.Authorization;
 using TAs.Application.GameRooms.Queries;
 using TAs.Application.GameRooms.Commands.CreateGameRoomInMemory;
 using TAs.Application.GameRooms.Commands.Update.UpdateRoomSettings;
+using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
 
 namespace TAs.APi.Multiplayer
 {
     [Authorize]
-    public class GameRoomHub(IMediator mediator, IUserContext userContext) : Hub
+    public class GameRoomHub(IMediator mediator, IUserContext userContext, IServiceProvider serviceProvider) : Hub
     {
         private readonly IMediator _mediator = mediator;
         private readonly IUserContext _userContext = userContext;
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
 
         public async Task JoinRoom(string roomId, string userId, string userName)
         {
@@ -116,8 +120,98 @@ namespace TAs.APi.Multiplayer
         // Game events methods
         public async Task SubmitAnswer(Guid roomId, object answerData)
         {
-            // TODO: Implement SubmitAnswerCommand/Handler if needed
-            await Clients.Group(roomId.ToString()).SendAsync("PlayerAnswered", answerData);
+            try
+            {
+                Console.WriteLine($"[GameRoomHub] SubmitAnswer called with roomId: {roomId}");
+                Console.WriteLine($"[GameRoomHub] Answer data: {Newtonsoft.Json.JsonConvert.SerializeObject(answerData)}");
+                
+                // Parse the answer data to extract player info and score
+                // Try multiple ways to parse the data
+                Guid playerId = Guid.Empty;
+                int score = 0;
+                bool parsedSuccessfully = false;
+                
+                // Method 1: Try as JObject
+                var answerDataDict = answerData as Newtonsoft.Json.Linq.JObject;
+                if (answerDataDict != null)
+                {
+                    playerId = Guid.Parse(answerDataDict["playerId"]?.ToString() ?? "");
+                    score = answerDataDict["score"]?.Value<int>() ?? 0;
+                    parsedSuccessfully = true;
+                    Console.WriteLine($"[GameRoomHub] Parsed as JObject - playerId: {playerId}, score: {score}");
+                }
+                else
+                {
+                    // Method 2: Try as JsonElement (System.Text.Json)
+                    var jsonElement = answerData as System.Text.Json.JsonElement?;
+                    if (jsonElement.HasValue)
+                    {
+                        var element = jsonElement.Value;
+                        if (element.TryGetProperty("playerId", out var playerIdElement) && 
+                            element.TryGetProperty("score", out var scoreElement))
+                        {
+                            playerId = Guid.Parse(playerIdElement.GetString() ?? "");
+                            score = scoreElement.GetInt32();
+                            parsedSuccessfully = true;
+                            Console.WriteLine($"[GameRoomHub] Parsed as JsonElement - playerId: {playerId}, score: {score}");
+                        }
+                    }
+                    else
+                    {
+                        // Method 3: Try to deserialize as dynamic object
+                        try
+                        {
+                            var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(answerData);
+                            var dynamicData = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(jsonString);
+                            var playerIdStr = dynamicData.playerId?.ToString();
+                            if (!Guid.TryParse(playerIdStr, out playerId))
+                            {
+                                playerId = Guid.Empty;
+                            }
+                            score = dynamicData.score ?? 0;
+                            parsedSuccessfully = true;
+                            Console.WriteLine($"[GameRoomHub] Parsed as dynamic - playerId: {playerId}, score: {score}");
+                        }
+                        catch (Exception parseEx)
+                        {
+                            Console.WriteLine($"[GameRoomHub] Failed to parse as dynamic: {parseEx.Message}");
+                        }
+                    }
+                }
+                
+                if (parsedSuccessfully && playerId != Guid.Empty)
+                {
+                    var inMemoryService = _serviceProvider.GetRequiredService<IInMemoryGameRoomService>();
+                    var updateResult = inMemoryService.UpdatePlayerScore(roomId, playerId, score);
+                    Console.WriteLine($"[GameRoomHub] UpdatePlayerScore result: {updateResult}");
+                    
+                    // Get the updated room details and broadcast to all clients in the room
+                    var updatedRoom = inMemoryService.GetRoomDetailsDTO(roomId);
+                    if (updatedRoom != null)
+                    {
+                        Console.WriteLine($"[GameRoomHub] Broadcasting RoomUpdated with updated room data");
+                        await Clients.Group(roomId.ToString()).SendAsync("RoomUpdated", updatedRoom);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[GameRoomHub] Failed to get updated room data");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[GameRoomHub] Failed to parse answerData - playerId: {playerId}, score: {score}");
+                }
+                
+                // Also broadcast the original answer data for immediate UI updates
+                await Clients.Group(roomId.ToString()).SendAsync("PlayerAnswered", answerData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GameRoomHub] Exception in SubmitAnswer: {ex.Message}");
+                Console.WriteLine($"[GameRoomHub] Stack trace: {ex.StackTrace}");
+                // Still broadcast the answer data even if score update fails
+                await Clients.Group(roomId.ToString()).SendAsync("PlayerAnswered", answerData);
+            }
         }
 
         public async Task StartGame(string roomId)
@@ -135,6 +229,25 @@ namespace TAs.APi.Multiplayer
                 {
                     Console.WriteLine("[GameRoomHub] User not authenticated");
                     await Clients.Caller.SendAsync("StartGameFailed", "User not authenticated");
+                    return;
+                }
+
+                // Parse roomId từ string sang Guid
+                if (!Guid.TryParse(roomId, out var roomGuid))
+                {
+                    Console.WriteLine($"[GameRoomHub] Invalid room ID format: {roomId}");
+                    await Clients.Caller.SendAsync("StartGameFailed", "Invalid room ID format");
+                    return;
+                }
+
+                // Cập nhật trạng thái game trong memory
+                var inMemoryService = _serviceProvider.GetRequiredService<IInMemoryGameRoomService>();
+                var startGameResult = inMemoryService.StartGame(roomGuid);
+                
+                if (!startGameResult)
+                {
+                    Console.WriteLine($"[GameRoomHub] Failed to start game in memory for room: {roomId}");
+                    await Clients.Caller.SendAsync("StartGameFailed", "Failed to start game");
                     return;
                 }
                 
@@ -157,9 +270,71 @@ namespace TAs.APi.Multiplayer
 
         public async Task EndGame(Guid roomId)
         {
-            // TODO: Implement EndGameCommand/Handler if needed
-            // await _mediator.Send(new EndGameCommand { RoomId = roomId });
-            await Clients.Group(roomId.ToString()).SendAsync("GameFinished");
+            try
+            {
+                Console.WriteLine($"[GameRoomHub] EndGame called for room: {roomId}");
+                
+                // Cập nhật trạng thái game trong memory
+                var inMemoryService = _serviceProvider.GetRequiredService<IInMemoryGameRoomService>();
+                var endGameResult = inMemoryService.EndGame(roomId);
+                
+                if (!endGameResult)
+                {
+                    Console.WriteLine($"[GameRoomHub] Failed to end game in memory for room: {roomId}");
+                }
+                
+                // Lấy kết quả game từ memory
+                var gameResult = inMemoryService.GetGameResultForSaving(roomId);
+                
+                if (gameResult != null)
+                {
+                    // Tạo command để lưu kết quả
+                    var saveCommand = new TAs.Application.GameRooms.Commands.GameSession.SaveGameResult.SaveGameResultCommand
+                    {
+                        RoomId = roomId,
+                        LessonId = gameResult.LessonId ?? Guid.Empty,
+                        StartedAt = gameResult.GameStartedAt ?? DateTime.UtcNow.AddMinutes(-10),
+                        EndedAt = DateTime.UtcNow,
+                        TotalSentences = 10, // Có thể lấy từ lesson
+                        TimeLimit = gameResult.Settings?.TimeLimit ?? 60,
+                        PlayerResults = gameResult.Players.Select(p => new TAs.Application.GameRooms.Commands.GameSession.SaveGameResult.PlayerGameResult
+                        {
+                            UserId = p.UserId,
+                            UserName = p.UserName,
+                            FinalScore = p.Score,
+                            CorrectAnswers = p.Score, // Giả sử mỗi điểm = 1 câu đúng
+                            IncorrectAnswers = 0, // Có thể tính từ attempt history
+                            TotalTimeSpent = gameResult.Settings?.TimeLimit ?? 60, // Giả sử dùng hết thời gian
+                            TotalRetries = 0, // Có thể lấy từ attempt history
+                            AverageTimePerSentence = (gameResult.Settings?.TimeLimit ?? 60) / 10.0f // Giả sử 10 câu
+                        }).ToList()
+                    };
+
+                    // Gửi command để lưu kết quả
+                    var saveResult = await _mediator.Send(saveCommand);
+                    
+                    if (saveResult.Success)
+                    {
+                        Console.WriteLine($"[GameRoomHub] Game result saved successfully. GameSessionId: {saveResult.GameSessionId}");
+                        await Clients.Group(roomId.ToString()).SendAsync("GameResultSaved", saveResult.GameSessionId);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[GameRoomHub] Failed to save game result: {saveResult.Message}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[GameRoomHub] No game result found for room: {roomId}");
+                }
+
+                await Clients.Group(roomId.ToString()).SendAsync("GameFinished");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GameRoomHub] Error in EndGame: {ex.Message}");
+                await Clients.Group(roomId.ToString()).SendAsync("GameFinished");
+            }
         }
 
         public async Task LessonSelected(Guid roomId, string lessonId, string lessonTitle, object lessonData)

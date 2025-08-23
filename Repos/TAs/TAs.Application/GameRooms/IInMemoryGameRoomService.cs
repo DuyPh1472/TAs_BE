@@ -15,5 +15,9 @@ namespace TAs.Application.GameRooms
         object? GetRoomDetailsDTO(Guid roomId);
         ReadyPlayerResult ReadyInMemory(Guid roomId, Guid userId, bool isReady);
         KickPlayerResult KickPlayerInMemory(Guid roomId, Guid hostId, Guid targetUserId);
+        bool UpdatePlayerScore(Guid roomId, Guid userId, int score);
+        GameRoomState? GetGameResultForSaving(Guid roomId);
+        bool StartGame(Guid roomId);
+        bool EndGame(Guid roomId);
     }
 } 

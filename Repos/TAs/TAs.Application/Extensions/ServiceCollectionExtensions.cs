@@ -17,6 +17,7 @@ namespace TAs.Application.Extensions
             services.AddScoped<IUserContext, UserContext>();
             services.AddHttpContextAccessor();
             services.AddSingleton<IInMemoryGameRoomService, InMemoryGameRoomService>();
+            services.AddHostedService<GameRoomTimeoutService>();
         }
     }
 }

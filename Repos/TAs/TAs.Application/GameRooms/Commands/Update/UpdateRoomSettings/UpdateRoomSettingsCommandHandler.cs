@@ -34,10 +34,13 @@ namespace TAs.Application.GameRooms.Commands.Update.UpdateRoomSettings
                 }
 
                 // Cập nhật settings trong in-memory room
-                inMemoryRoom.Settings.TimeLimit = request.TimeLimit;
-                inMemoryRoom.Settings.MaxRetries = request.MaxRetries;
-                inMemoryRoom.Settings.ShowRealTimeScore = request.ShowRealTimeScore;
-                inMemoryRoom.Settings.AllowHints = request.AllowHints;
+                if (inMemoryRoom.Settings != null)
+                {
+                    inMemoryRoom.Settings.TimeLimit = request.TimeLimit;
+                    inMemoryRoom.Settings.MaxRetries = request.MaxRetries;
+                    inMemoryRoom.Settings.ShowRealTimeScore = request.ShowRealTimeScore;
+                    inMemoryRoom.Settings.AllowHints = request.AllowHints;
+                }
 
                 return Result<bool>.Success(true);
             }

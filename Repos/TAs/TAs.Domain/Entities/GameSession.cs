@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using TAs.Domain.Enums;
 
-namespace TAs.Domain.Entities
+namespace TAs.Domain.Entities 
 {
     public class GameSession : BaseEntity
     {

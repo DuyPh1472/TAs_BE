@@ -7,5 +7,6 @@ namespace TAs.Application.GameRooms
         public string Avatar { get; set; } = string.Empty;
         public bool IsHost { get; set; } = false;
         public bool IsReady { get; set; } = false;
+        public int Score { get; set; } = 0;
     }
 }

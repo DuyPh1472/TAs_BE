@@ -22,7 +22,7 @@ namespace TAs.Application.GameRooms
             {
                 return new AddPlayerResult { Success = false, Status = "RoomNotFound", Message = $"Room {roomId} not found" };
             }
-            if (room.Players.Count >= room.Settings.MaxPlayers)
+            if (room.Players.Count >= (room.Settings?.MaxPlayers ?? 4))
             {
                 return new AddPlayerResult { Success = false, Status = "RoomFull", Message = $"Room {roomId} is full" };
             }
@@ -64,7 +64,10 @@ namespace TAs.Application.GameRooms
             if (_rooms.TryGetValue(roomId, out var room))
             {
                 room.LessonId = lessonId;
-                room.Settings.LessonId = lessonId; // Đảm bảo đồng bộ với FE
+                if (room.Settings != null)
+                {
+                    room.Settings.LessonId = lessonId; // Đảm bảo đồng bộ với FE
+                }
                 return true;
             }
             return false;
@@ -181,18 +184,18 @@ namespace TAs.Application.GameRooms
                     hostName = host?.UserName ?? "Unknown",
                     hostAvatar = hostAvatar,
                     playerCount = room.Players.Count,
-                    maxPlayers = room.Settings.MaxPlayers,
+                    maxPlayers = room.Settings?.MaxPlayers ?? 4,
                     status = room.GameStatus.ToString().ToLower(),
                     categoryTitle = room.CategoryTitle,
                     categoryDescription = room.CategoryDescription,
                     createdAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                     settings = new
                     {
-                        timeLimit = room.Settings.TimeLimit,
-                        maxRetries = room.Settings.MaxRetries,
-                        showRealTimeScore = room.Settings.ShowRealTimeScore,
-                        allowHints = room.Settings.AllowHints,
-                        lessonSelection = room.Settings.LessonSelection
+                        timeLimit = room.Settings?.TimeLimit ?? 60,
+                        maxRetries = room.Settings?.MaxRetries ?? 2,
+                        showRealTimeScore = room.Settings?.ShowRealTimeScore ?? true,
+                        allowHints = room.Settings?.AllowHints ?? true,
+                        lessonSelection = room.Settings?.LessonSelection ?? "host_choice"
                     },
                     players = room.Players.Select(p => new
                     {
@@ -201,7 +204,7 @@ namespace TAs.Application.GameRooms
                         avatar = p.Avatar,
                         isHost = p.IsHost,
                         isReady = p.IsReady,
-                        score = 0,
+                        score = p.Score,
                         currentProgress = 0,
                         status = PlayerStatus.Connected,
                         joinedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -224,10 +227,10 @@ namespace TAs.Application.GameRooms
                 hostName = host?.UserName ?? "Unknown",
                 hostAvatar = hostAvatar,
                 status = room.GameStatus,
-                maxPlayers = room.Settings.MaxPlayers,
+                maxPlayers = room.Settings?.MaxPlayers ?? 4,
                 currentPlayers = room.Players.Count,
-                selectedLessonId = room.Settings.LessonId?.ToString(),
-                selectedLessonTitle = room.Settings.LessonId != null ? "Selected Lesson" : null,
+                selectedLessonId = room.Settings?.LessonId?.ToString(),
+                selectedLessonTitle = room.Settings?.LessonId != null ? "Selected Lesson" : null,
                 currentSentence = 0,
                 categoryId = room.CategoryId,
                 categoryTitle = room.CategoryTitle,
@@ -242,20 +245,90 @@ namespace TAs.Application.GameRooms
                     avatar = p.Avatar,
                     isHost = p.IsHost,
                     isReady = p.IsReady,
-                    score = 0,
+                    score = p.Score,
                     currentProgress = 0,
                     status = PlayerStatus.Connected,
                     joinedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
                 }).ToArray(),
                 settings = new
                 {
-                    timeLimit = room.Settings.TimeLimit,
-                    maxRetries = room.Settings.MaxRetries,
-                    showRealTimeScore = room.Settings.ShowRealTimeScore,
-                    allowHints = room.Settings.AllowHints,
-                    lessonSelection = room.Settings.LessonSelection
+                    timeLimit = room.Settings?.TimeLimit ?? 60,
+                    maxRetries = room.Settings?.MaxRetries ?? 2,
+                    showRealTimeScore = room.Settings?.ShowRealTimeScore ?? true,
+                    allowHints = room.Settings?.AllowHints ?? true,
+                    lessonSelection = room.Settings?.LessonSelection ?? "host_choice"
                 }
             };
+        }
+
+        public bool UpdatePlayerScore(Guid roomId, Guid userId, int score)
+        {
+            Console.WriteLine($"[InMemoryGameRoomService] UpdatePlayerScore called: roomId={roomId}, userId={userId}, score={score}");
+            
+            if (!_rooms.TryGetValue(roomId, out var room))
+            {
+                Console.WriteLine($"[InMemoryGameRoomService] Room {roomId} not found");
+                return false;
+            }
+
+            var player = room.Players.FirstOrDefault(p => p.UserId == userId);
+            if (player == null)
+            {
+                Console.WriteLine($"[InMemoryGameRoomService] Player {userId} not found in room {roomId}");
+                return false;
+            }
+
+            Console.WriteLine($"[InMemoryGameRoomService] Updating player {userId} score from {player.Score} to {player.Score + score}");
+            player.Score += score; // Cộng dồn điểm số thay vì ghi đè
+            Console.WriteLine($"[InMemoryGameRoomService] Player {userId} score updated to {player.Score}");
+            return true;
+        }
+
+        public GameRoomState? GetGameResultForSaving(Guid roomId)
+        {
+            Console.WriteLine($"[InMemoryGameRoomService] GetGameResultForSaving called: roomId={roomId}");
+            
+            if (!_rooms.TryGetValue(roomId, out var room))
+            {
+                Console.WriteLine($"[InMemoryGameRoomService] Room {roomId} not found for saving");
+                return null;
+            }
+
+            Console.WriteLine($"[InMemoryGameRoomService] Returning game result for room {roomId} with {room.Players.Count} players");
+            return room;
+        }
+
+        public bool StartGame(Guid roomId)
+        {
+            Console.WriteLine($"[InMemoryGameRoomService] StartGame called: roomId={roomId}");
+            
+            if (!_rooms.TryGetValue(roomId, out var room))
+            {
+                Console.WriteLine($"[InMemoryGameRoomService] Room {roomId} not found for starting game");
+                return false;
+            }
+
+            room.GameStatus = GameStatus.Playing;
+            room.GameStartedAt = DateTime.UtcNow;
+            
+            Console.WriteLine($"[InMemoryGameRoomService] Game started for room {roomId} at {room.GameStartedAt}");
+            return true;
+        }
+
+        public bool EndGame(Guid roomId)
+        {
+            Console.WriteLine($"[InMemoryGameRoomService] EndGame called: roomId={roomId}");
+            
+            if (!_rooms.TryGetValue(roomId, out var room))
+            {
+                Console.WriteLine($"[InMemoryGameRoomService] Room {roomId} not found for ending game");
+                return false;
+            }
+
+            room.GameStatus = GameStatus.Finished;
+            
+            Console.WriteLine($"[InMemoryGameRoomService] Game ended for room {roomId}");
+            return true;
         }
     }
 
